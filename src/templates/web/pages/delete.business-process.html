@@ -1,0 +1,12 @@
+{% extends 'web/base.html' %}
+{% load static i18n %}
+
+{% block content %}
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            <h3>{% trans "Are you sure you want to delete this business process?" %}</h3>
+            <input type="submit" value="{% trans 'Delete' %}" class="btn btn-danger">
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'web/base.html' %}
+{% load static i18n %}
+
+{% block content %}
+
+    <table class="table table-sm">
+        <tbody>
+        <tr>
+            <th>{% trans 'ID' %}</th>
+            <td>{{ task.id }}</td>
+            {% if is_owner %}
+                <th>{% trans 'Excel file' %}</th>
+                <td><a href="{{ task.excel_file.url }}">{% trans 'Download' %}</a></td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th>{% trans 'Title' %}</th>
+            <td>{{ task.title }}</td>
+            {% if is_owner %}
+                <th>{% trans 'Parser type' %}</th>
+                <td>{{ task.parser_type }}</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th>{% trans 'Description' %}</th>
+            <td colspan>{{ task.description }}</td>
+            {% if is_owner %}
+                <th>{% trans 'Has row numbers' %}</th>
+                <td>{{ task.has_row_numbers }}</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th>{% trans 'Deadline' %}</th>
+            <td>{{ task.deadline }}</td>
+            {% if is_owner %}
+                <th>{% trans 'Status' %}</th>
+                <td>{{ task.status }}</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th>{% trans 'Created by' %}</th>
+            <td>{{ task.created_by }}</td>
+            {% if is_owner %}
+                <th>{% trans 'Minimal BPM group' %}</th>
+                <td>{{ task.min_bpm_group }}</td>
+            {% endif %}
+        </tr>
+        </tbody>
+    </table>
+    <div id="task-transactions"></div>
+    <div id="example"></div>
+    <tr>
+        <td>
+            <div contenteditable inputmode="date">I'm editable</div>
+        </td>
+        <td>
+            <div contenteditable>I'm also editable</div>
+        </td>
+    </tr>
+    <tr>
+        <td>I'm not editable</td>
+    </tr>
+    </table>
+    <script>
+
+    </script>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'web/base.html' %}
+{% load static i18n %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            <table class="table table-sm table-striped-columns">
+                <tbody>
+                <tr>
+                    <td>{% trans "ID" %}</td>
+                    <td>{{ object.id }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "UUID" %}</td>
+                    <td>{{ object.uuid }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Title" %}</td>
+                    <td>{{ object.title }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Description" %}</td>
+                    <td>{{ object.description }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Excel file" %}</td>
+                    <td>
+                        {% if object.excel_file %}
+                            <a href="/files/media/{{ object.excel_file }}">{% trans 'Download' %}</a>
+                        {% else %}
+                            {% trans "No file" %}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{% trans "DGD code column" %}</td>
+                    <td>{{ object.get_dgd_code_column_display }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "DGD name column" %}</td>
+                    <td>{{ object.get_dgd_name_column_display }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "UGD code column" %}</td>
+                    <td>{{ object.get_ugd_code_column_display }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Status" %}</td>
+                    <td>{{ object.get_status_display }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Minimal BPM group" %}</td>
+                    <td>{{ object.get_min_bpm_group_display }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Created by" %}</td>
+                    <td>{{ object.created_by }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Created at" %}</td>
+                    <td>{{ object.created_at_pretty }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Updated at" %}</td>
+                    <td>{{ object.updated_at_pretty }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <a href="{% url 'edit-business-process' object.id %}"
+                           class="btn btn-primary"><i class="fa fa-pen-alt"></i> {% trans "Edit" %}</a>
+                        <a href="{% url 'delete-business-process' object.id %}"
+                           class="btn btn-danger"><i class="fa fa-trash-alt"></i> {% trans "Delete" %}</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-12 col-md-8 col-lg-8">
+            {% if columns %}
+                <table class="table table-sm table-striped">
+                    <thead>
+                    <tr>
+                        <th colspan="3">
+                            {% trans "Columns" %}
+                        </th>
+                        <td>
+                            <a href="{% url 'edit-business-process-columns' object.id %}"
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fa fa-pen"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Index" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Type" %}</th>
+                        <th>{% trans "Is editable" %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for column in columns %}
+                        <tr>
+                            <td>{{ column.column_index }}</td>
+                            <td>{{ column.column_name }}</td>
+                            <td>{{ column.get_column_type_display }}</td>
+                            <td>{{ column.is_editable }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                {% if object.excel_file %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="btn btn-primary">{% trans "Run excel file parsing" %}</button>
+                        {% if error %}
+                            {{ error }}
+                        {% endif %}
+                    </form>
+                {% else %}
+                    <small>{% trans "Upload excel file please" %}</small>
+                {% endif %}
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

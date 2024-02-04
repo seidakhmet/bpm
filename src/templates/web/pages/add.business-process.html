@@ -1,0 +1,18 @@
+{% extends 'web/base.html' %}
+{% load static i18n %}
+
+{% block content %}
+    <div class="container">
+        <h3>{% trans "Add business process" %}</h3>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.auto_id }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+        </form>
+    </div>
+{% endblock %}
