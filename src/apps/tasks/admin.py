@@ -7,6 +7,9 @@ from apps.tasks.models import (
     Task,
     TaskCell,
     TaskCellValueLog,
+    TaskStatus,
+    TaskComment,
+    TaskDelegation,
 )
 
 
@@ -71,4 +74,61 @@ class TaskCellAdmin(admin.ModelAdmin):
 
 @admin.register(TaskCellValueLog)
 class TaskCellValueLogAdmin(admin.ModelAdmin):
+    list_display = (
+        "business_process",
+        "column_name",
+        "task_index",
+        "old_value",
+        "new_value",
+        "created_by",
+        "created_at_pretty",
+    )
+    ordering = ("-created_at",)
+
+    def business_process(self, obj):
+        return obj.task_cell.business_process
+
+    business_process.short_description = _("Business process")
+
+    def task_index(self, obj):
+        return obj.task_cell.task.index
+
+    task_index.short_description = _("Task index")
+
+    def column_name(self, obj):
+        return obj.task_cell.column.column_name
+
+    column_name.short_description = _("Column name")
+
+
+@admin.register(TaskStatus)
+class TaskStatusAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(TaskComment)
+class TaskCommentAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(TaskDelegation)
+class TaskDelegationAdmin(admin.ModelAdmin):
+    list_display = [
+        "task",
+        "status",
+        "delegated_to_bpm_group",
+        "delegated_to",
+        "created_by",
+    ]
+    search_fields = [
+        "task__business_process__title",
+        "delegated_to_bpm_group__bpm_group_name",
+        "delegated_to__bpm_full_name",
+        "delegated_to__first_name",
+        "delegated_to__last_name",
+        "created_by__bpm_full_name",
+        "created_by__first_name",
+        "created_by__last_name",
+        "task__cells__value",
+    ]
+    list_filter = ["status"]

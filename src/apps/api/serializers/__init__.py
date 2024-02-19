@@ -1,2 +1,2 @@
 from .token import TokenRequestSerializer, TokenResponseSerializer  # noqa
-from .tasks import BusinessProcessSerializer  # noqa
+from .tasks import BusinessProcessSerializer, TaskCommentSerializer, TaskSerializer  # noqa

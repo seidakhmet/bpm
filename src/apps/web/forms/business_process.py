@@ -24,3 +24,10 @@ class BusinessProcessForm(forms.ModelForm):
             "dgd_name_column": forms.Select(attrs={"class": "form-control"}),
             "ugd_code_column": forms.Select(attrs={"class": "form-control"}),
         }
+
+
+class PublishBusinessProcessForm(forms.ModelForm):
+    class Meta:
+        model = BusinessProcess
+        fields = ("status",)
+        widgets = {"status": forms.HiddenInput()}

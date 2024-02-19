@@ -181,7 +181,7 @@ class UserTokenAdmin(admin.ModelAdmin):
 
     list_display = ("user", "uuid", "created_at", "is_used", "is_active")
     search_fields = ("user__username", "uuid")
-    readonly_fields = ("uuid", "user", "created_at", "rsa_key_uuid", "request_data", "is_active")
+    readonly_fields = ("uuid", "created_at", "rsa_key_uuid", "request_data", "is_active")  # "user",
     list_filter = ("is_used",)
 
     def is_active(self, obj):

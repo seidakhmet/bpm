@@ -7,4 +7,13 @@ from .business_process import (
     EditBusinessProcessView,
     DeleteBusinessProcessView,
     EditBusinessProcessColumnView,
+    StatusDetailBusinessProcessView,
+    AddTaskStatusView,
+    EditTaskStatusView,
+    DeleteTaskStatusView,
+    TaskView,
+    GroupTaskView,
+    DelegatedTaskView,
+    PublishBusinessProcessView,
+    ApproveTaskView,
 )  # noqa

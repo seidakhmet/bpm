@@ -4,30 +4,51 @@
 {% block content %}
     <div class="container">
         <h3>{% trans "Edit business process columns" %}: {{ object.uuid }}</h3>
-        <table class="table table-sm table-striped">
-            <thead>
-            <tr>
-                <th colspan="4">
-                    {% trans "Columns" %}
-                </th>
-            </tr>
-            <tr>
-                <th>{% trans "Index" %}</th>
-                <th>{% trans "Name" %}</th>
-                <th>{% trans "Type" %}</th>
-                <th>{% trans "Is editable" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for column in columns %}
+        <form method="post">
+            <table class="table table-sm table-striped">
+                <thead>
                 <tr>
-                    <td>{{ column.column_index }}</td>
-                    <td>{{ column.column_name }}</td>
-                    <td>{{ column.get_column_type_display }}</td>
-                    <td>{{ column.is_editable }}</td>
+                    <th colspan="4">
+                        {% trans "Columns" %}
+                    </th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                <tr>
+                    <th>{% trans "Index" %}</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "Is editable" %}</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% csrf_token %}
+                {% for column in columns %}
+                    <tr>
+                        <td>{{ column.column_index }}</td>
+                        <td>
+                            <input type="text" style="width: 100%;" name="column_name_{{ column.id }}" value="{{ column.column_name }}">
+                        </td>
+                        <td>
+                            <select name="column_type_{{ column.id }}">
+                                {% for option in column_types.choices %}
+                                    <option value="{{ option.0 }}"
+                                            {% if column.column_type == option.0 %}selected{% endif %}>{{ option.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="is_editable_{{ column.id }}"
+                                   {% if column.is_editable %}checked{% endif %}>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="4">
+                        <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
     </div>
 {% endblock %}

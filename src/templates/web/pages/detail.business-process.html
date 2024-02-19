@@ -68,29 +68,43 @@
                 <tr>
                     <td colspan="2">
                         <a href="{% url 'edit-business-process' object.id %}"
-                           class="btn btn-primary"><i class="fa fa-pen-alt"></i> {% trans "Edit" %}</a>
+                           class="btn btn-info btn-sm"><i class="fa-solid fa-pen"></i> {% trans "Edit" %}</a>
                         <a href="{% url 'delete-business-process' object.id %}"
-                           class="btn btn-danger"><i class="fa fa-trash-alt"></i> {% trans "Delete" %}</a>
+                           class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i> {% trans "Delete" %}</a>
+                        <a href="{% url 'tasks-business-process' object.id %}"
+                           class="btn btn-link btn-sm float-end"><i
+                                class="fa-solid fa-list-check"></i> {% trans "Tasks" %}</a>
                     </td>
                 </tr>
+                {% if object.status == 'created' %}
+                    <tr>
+                        <td colspan="2">
+                            <a href="{% url 'publish-status-business-process' object.id %}"
+                               class="btn btn-warning btn-sm float-end"><i
+                                    class="fa-solid fa-pen"></i> {% trans "Publish" %}</a>
+                        </td>
+                    </tr>
+                {% endif %}
                 </tbody>
             </table>
         </div>
         <div class="col-sm-12 col-md-8 col-lg-8">
-            {% if columns %}
+            {% block tabs %}
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page">{% trans "Columns" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        {% if columns %}
+                            <a class="nav-link" href="{% url "status-detail-business-process" pk=object.pk %}">
+                        {% else %}
+                            <a class="nav-link disabled" aria-disabled="true">
+                        {% endif %}
+                        {% trans "Defined task statuses" %}</a>
+                    </li>
+                </ul>
                 <table class="table table-sm table-striped">
                     <thead>
-                    <tr>
-                        <th colspan="3">
-                            {% trans "Columns" %}
-                        </th>
-                        <td>
-                            <a href="{% url 'edit-business-process-columns' object.id %}"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fa fa-pen"></i>
-                            </a>
-                        </td>
-                    </tr>
                     <tr>
                         <th>{% trans "Index" %}</th>
                         <th>{% trans "Name" %}</th>
@@ -104,26 +118,33 @@
                             <td>{{ column.column_index }}</td>
                             <td>{{ column.column_name }}</td>
                             <td>{{ column.get_column_type_display }}</td>
-                            <td>{{ column.is_editable }}</td>
+                            <td>
+                                {% if column.is_editable %}
+                                    <i class="fa-solid fa-square-check" style="color: green;"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-square-xmark" style="color: red;"></i>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
+                    {% if columns %}
+                        <tr>
+                            <td colspan="4">
+                                <a href="{% url 'edit-business-process-columns' object.id %}"
+                                   class="btn btn-info btn-sm">
+                                    <i class="fa fa-pen"></i> {% trans "Edit columns" %}
+                                </a>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">
+                                {% trans "No columns" %}
+                            </td>
+                        </tr>
+                    {% endif %}
                     </tbody>
                 </table>
-            {% else %}
-                {% if object.excel_file %}
-                    <form method="POST">
-                        {% csrf_token %}
-                        <button type="submit"
-                                class="btn btn-primary">{% trans "Run excel file parsing" %}</button>
-                        {% if error %}
-                            {{ error }}
-                        {% endif %}
-                    </form>
-                {% else %}
-                    <small>{% trans "Upload excel file please" %}</small>
-                {% endif %}
-            {% endif %}
-
+            {% endblock tabs %}
         </div>
     </div>
 {% endblock %}

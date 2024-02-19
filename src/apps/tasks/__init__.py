@@ -6,9 +6,7 @@ class BusinessProcessStatuses(models.TextChoices):
     """Статусы бизнес-процесса"""
 
     CREATED = "created", _("Created")
-    PREPARED_FOR_PUBLISHING = "prepared_for_publishing", _("Prepared for publishing")
     PUBLISHED = "published", _("Published")
-    IN_PROGRESS = "in_progress", _("In progress")
     COMPLETED = "completed", _("Completed")
     CANCELED = "canceled", _("Canceled")
 
@@ -28,21 +26,12 @@ class TaskColumnTypes(models.TextChoices):
 class TaskDelegationStatuses(models.TextChoices):
     """Статусы делегирования задачи"""
 
-    CREATED = "created", _("Created")
-    RECEIVED = "received", _("Received")
-    FINISHED = "finished", _("Finished")
-    ACCEPTED = "accepted", _("Accepted")
-    REJECTED = "rejected", _("Rejected")
-    CANCELED = "canceled", _("Canceled")
-
-
-class ExcelFileParserType(models.TextChoices):
-    """Типы парсера Excel файла"""
-
-    DGD_CODE_AND_DGD_TITLE = "dgd_code_and_dgd_title", _("DGD code and DGD title")
-    DGD_CODE_AND_DGD_TITLE_AND_UGD_CODE = "dgd_code_and_dgd_title_and_ugd_code", _(
-        "DGD code and DGD title and UGD code"
-    )
+    DELEGATED_TO_USER = "delegated_to_user", _("Delegated to user")
+    DELEGATED_TO_GROUP = "delegated_to_group", _("Delegated to group")
+    SELF_DELEGATED = "self_delegated", _("Self-delegated")
+    RETURNED_TO_DELEGATOR = "returned_to_delegator", _("Returned to delegator")
+    SENT_TO_APPROVAL = "sent_to_approval", _("Sent to approval")
+    SENT_TO_REWORK = "sent_to_rework", _("Sent to rework")
 
 
 class ExcelColumnIndex(models.IntegerChoices):

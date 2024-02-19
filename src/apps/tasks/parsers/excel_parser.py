@@ -23,9 +23,9 @@ class ExcelParser:
         column_index = 0
         for column in workbook.columns:
             self.business_process.columns.update_or_create(
-                column_name=column,
+                column_index=column_index,
                 defaults={
-                    "column_index": column_index,
+                    "column_name": column,
                     "column_type": TaskColumnTypes.STRING,
                 },
             )

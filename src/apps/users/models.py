@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timedelta, timezone
 from django.conf import settings
 from django.contrib.auth import models as django_auth_models
@@ -8,6 +9,7 @@ from Crypto.PublicKey import RSA
 
 
 from apps.common.mixins import models as mixin_models
+from apps.users import BPMGroups
 from apps.users.crypt import newkeys, decrypt, encrypt
 from apps.users.managers import CustomUserManager, BPMGroupManager
 
@@ -27,6 +29,13 @@ class BPMGroup(mixin_models.TimestampModel):
 
     def __str__(self) -> str:
         return self.bpm_group_name
+
+    @property
+    def prefix(self):
+        return BPMGroups.get_group(self.bpm_group_name)
+
+    def code(self):
+        return "".join(re.findall(r"\d+", self.bpm_group_name))
 
 
 class User(mixin_models.TimestampModel, django_auth_models.AbstractUser):
@@ -57,6 +66,22 @@ class User(mixin_models.TimestampModel, django_auth_models.AbstractUser):
 
     def __str__(self) -> str:
         return self.full_name or self.username
+
+    def bpm_group_prefixes(self):
+        return [group.prefix for group in self.bpm_groups.all() if group.prefix]
+
+    def bpm_group_codes(self):
+        return [group.code() for group in self.bpm_groups.all() if group.code()]
+
+    @property
+    def can_edit(self):
+        return any([group in BPMGroups.can_edit_tasks() for group in self.bpm_group_prefixes()])
+
+    def bpm_group_share_prefixes(self):
+        prefixes = [prefix for group in self.bpm_group_prefixes() for prefix in BPMGroups.can_share_with(group)]
+        codes = self.bpm_group_codes()
+
+        return [f"{prefix}_{code}" for prefix in prefixes for code in codes]
 
 
 class RSAKey(mixin_models.TimestampModel, mixin_models.UUIDModel):
@@ -117,7 +142,11 @@ class UserToken(mixin_models.TimestampModel, mixin_models.UUIDModel):
 
     @property
     def is_active(self) -> bool:
-        return not (
-            self.created_at + timedelta(seconds=settings.AUTH_TOKEN_EXPIRE_SECONDS)
-            < datetime.now(tz=timezone(timedelta(hours=6)))
-        )
+        if self.created_at:
+            return (
+                not (
+                    self.created_at + timedelta(seconds=settings.AUTH_TOKEN_EXPIRE_SECONDS)
+                    < datetime.now(tz=timezone(timedelta(hours=6)))
+                )
+                and not self.is_used
+            )

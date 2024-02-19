@@ -1,0 +1,505 @@
+{% extends 'web/base.html' %}
+{% load static i18n %}
+
+{% block content %}
+    <style>
+        .my_task td {
+            background-color: #b3ffe6;
+        }
+
+        .delegated td {
+            background-color: #ffc037;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        thead th.fixed, thead td.fixed, tbody th.fixed, tbody td.fixed {
+            position: sticky;
+            z-index: 1;
+            left: 0;
+            right: auto;
+            background-color: #f2f2f2;
+        }
+
+        td {
+            position: relative;
+            padding-right: 10px;
+        }
+
+        .triangle-red:after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            border: 4px solid transparent;
+            border-top-color: red;
+            border-right-color: red;
+        }
+
+        .triangle-green:before {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            border: 4px solid transparent;
+            border-bottom-color: green;
+            border-right-color: green;
+        }
+    </style>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'tasks-business-process' pk=object.id %}">
+                <small>
+                    {% trans "My tasks" %}
+                    {% if my_tasks_count > 0 %}
+                        <span class="badge bg-dark">{{ my_tasks_count }}</span>
+                    {% endif %}
+                </small>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'group-tasks-business-process' pk=object.id %}">
+                <small>
+                    {% trans "Group tasks" %}
+                    {% if group_tasks_count > 0 %}
+                        <span class="badge bg-dark">{{ group_tasks_count }}</span>
+                    {% endif %}
+                </small>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'delegated-tasks-business-process' pk=object.id %}">
+                <small>
+                    {% trans "Delegated tasks" %}
+                    {% if delegated_tasks_count > 0 %}
+                        <span class="badge bg-dark">{{ delegated_tasks_count }}</span>
+                    {% endif %}
+                </small>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'approve-tasks-business-process' pk=object.id %}">
+                <small>
+                    {% trans "Approve tasks" %}
+                    {% if approve_tasks_count > 0 %}
+                        <span class="badge bg-dark">{{ approve_tasks_count }}</span>
+                    {% endif %}
+                </small>
+            </a>
+        </li>
+    </ul>
+
+    <form method="get" action="{% url 'group-tasks-business-process' pk=object.pk %}">
+        <div class="input-group mb-3 mt-3">
+            <input type="text" class="form-control" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}"
+                   aria-describedby="search-button" name="query" value="{{ query }}">
+            <button class="btn btn-outline-secondary" type="submit" id="search-button">
+                <i class="fa-solid fa-search"></i>
+            </button>
+        </div>
+    </form>
+
+    <form method="post" action="{% url 'group-tasks-business-process' pk=object.pk %}">
+        <div style="overflow-x: auto;">
+            <table class="table table-bordered table-sm" style="font-size: 9pt;" id="gridTasks">
+                <thead>
+                <tr>
+                    <th style="text-align: center; vertical-align: middle;">
+                        <div style="width: max-content" class="form-check">
+                            <input type="checkbox" class="form-check-input columnCheckbox"
+                                   id="colCheckboxSelect">
+                            <label class="form-check-label"
+                                   for="colCheckboxSelect">{% trans '#' %}</label>
+                        </div>
+                    </th>
+                    {% for column in columns %}
+                        <th style="text-align: center; vertical-align: middle;">
+                            <div style="width: max-content" class="form-check">
+                                <input type="checkbox" class="form-check-input columnCheckbox"
+                                       id="colCheckbox{{ column.id }}">
+                                <label class="form-check-label"
+                                       for="colCheckbox{{ column.id }}">{{ column.column_name }}</label>
+                            </div>
+                        </th>
+                    {% endfor %}
+                    <th style="text-align: center; vertical-align: middle;">{% trans "Status" %}</th>
+                    <th style="text-align: center; vertical-align: middle;">{% trans "Comments" %}</th>
+                    <th style="text-align: left; vertical-align: middle;">{% trans "Executor" %}</th>
+                </tr>
+                </thead>
+
+                {% csrf_token %}
+                <tbody style="vertical-align: middle;">
+                {% if group_tasks_count > 0 %}
+                    {% for row in tasks %}
+                        <tr {% if row.is_delegated %}class="delegated"
+                            {% elif row.is_my_task %}class="my_task"{% endif %}>
+                            <td style="width: max-content;padding: 0; text-align: center; vertical-align: middle;">
+                                <div style="width: max-content; padding-left: 5px; padding-right: 5px;"
+                                     class="form-check">
+                                    <input type="checkbox" name="selected_row_{{ row.id }}" value="{{ row.id }}"
+                                           data-task-id="{{ row.id }}" class="rowCheckboxes">
+                                </div>
+                            </td>
+                            {% for cell in row.get_cells %}
+                                <td style="width: max-content;padding: 0;{% if cell.column.is_boolean %}text-align: center;{% endif %}">
+                                    {% if cell.column.is_boolean %}
+                                        {% if cell.value == '1' %}
+                                            <i class="fa-solid fa-circle-check" style="color: green;"></i>
+                                        {% elif cell.value == '0' %}
+                                            <i class="fa-solid fa-circle-xmark" style="color: red;"></i>
+                                        {% endif %}
+                                    {% else %}
+                                        {{ cell.value|default:"" }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                            <td>
+                                {{ row.get_status }}
+                            </td>
+                            <td style="text-align: center;" data-task-id="{{ row.id }}">
+                                <a href="#" class="icon-link icon-link-hover comments position-relative"
+                                   style="text-decoration:none;">
+                                    <i class="fa-solid fa-comment-dots"></i>
+                                    {% if row.comments_count %}
+                                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                    <span class="visually-hidden">New alerts</span></span>
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td>
+                                <div style="width: max-content;">{{ row.get_last_delegation }}</div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr style="border: none;">
+                        <td colspan="{{ columns_count }}" style="border: none;">
+                            <div class="alert alert-info" role="alert">{% trans "No tasks" %}</div>
+                        </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+
+            </table>
+        </div>
+        {% if group_tasks_count > 0 %}
+            <div class="row">
+                <div class="col-8 col-sm-12 col-md-8">
+                    <nav aria-label="Pagination" class="mb-3">
+                        <ul class="pagination pagination-sm mb-0">
+                            {% if tasks.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ tasks.previous_page_number }}"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true"><i class="fa-solid fa-backward-step"></i></span>
+                                    </a>
+                                </li>
+                                {% if tasks.number > 3 %}
+                                    <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                                    {% if tasks.number > 4 %}
+                                        <li class="page-item">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+
+                            {% for num in tasks.paginator.page_range %}
+                                {% if tasks.number == num %}
+                                    <li class="page-item active"><a class="page-link"
+                                                                    href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% elif num > tasks.number|add:'-3' and num < tasks.number|add:'3' %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if tasks.has_next %}
+                                {% if tasks.number < tasks.paginator.num_pages|add:'-3' %}
+                                    <li class="page-item">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?page={{ tasks.paginator.num_pages }}">{{ tasks.paginator.num_pages }}</a>
+                                    </li>
+                                {% elif tasks.number < tasks.paginator.num_pages|add:'-2' %}
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?page={{ tasks.paginator.num_pages }}">{{ tasks.paginator.num_pages }}</a>
+                                    </li>
+                                {% endif %}
+
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ tasks.next_page_number }}"
+                                       aria-label="Next">
+                                        <span aria-hidden="true"><i class="fa-solid fa-forward-step"></i></span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-4 col-sm-12 col-md-4">
+                    <button class="btn btn-warning btn-sm float-end mx-md-3" type="submit" id="assignToMeBtn"
+                            name="assign" value="true">
+                        <i class="fa-solid fa-user-tag"></i>
+                        {% trans 'Assign to me' %}
+                    </button>
+                    <button class="btn btn-danger btn-sm float-end mx-md-3" type="submit" id="assignAllToMeBtn"
+                            name="assign_all_to_me" value="true">
+                        <i class="fa-solid fa-user-secret"></i>
+                        {% if query %}
+                            {% trans 'Assign all found tasks to me' %}
+                        {% else %}
+                            {% trans 'Assign all tasks to me' %}
+                        {% endif %}
+                    </button>
+                </div>
+
+            </div>
+        {% endif %}
+
+    </form>
+
+
+    <div class="modal fade" id="commentsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="commentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="commentsModalLabel">{% trans 'Comments' %}</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="commentsTag">
+                    <div class="card" style="margin: auto;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ comment.created_by }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ comment.created_at_pretty }}</h6>
+                            <p class="card-text">{{ comment.text }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <textarea id="commentTextarea" class="form-control" rows="3"
+                              placeholder="{% trans 'Enter your comment...' %}"></textarea>
+                    <a id="sendMessageBtn" class="btn btn-primary btn-sm">{% trans "Send" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let statusRequiredColumns = {
+                {% for status in statuses %}
+                    '{{ status.id }}': [
+                        {% for column in status.required_task_columns.all %}
+                            '{{ column.id }}',
+                        {% endfor %}
+                    ],
+                {% endfor %}
+            };
+
+            let taskStatuses = document.querySelectorAll('.taskStatuses');
+            taskStatuses.forEach(function (select) {
+                select.addEventListener('change', function (e) {
+                    let taskId = e.target.getAttribute('data-task-id');
+                    let selectedStatusId = e.target.value;
+                    let taskColumns = document.querySelectorAll('.cell_task_' + taskId);
+                    if (selectedStatusId === '0') {
+                        taskColumns.forEach(function (column) {
+                            column.removeAttribute('required');
+                            let td = findClosestTag(column, 'TD');
+                            td.classList.remove('triangle-red');
+                        });
+                    } else {
+                        let requiredColumns = statusRequiredColumns[selectedStatusId];
+
+                        taskColumns.forEach(function (column) {
+                            let columnId = column.getAttribute('data-column-id');
+                            let td = findClosestTag(column, 'TD');
+                            if (requiredColumns.includes(columnId)) {
+                                column.setAttribute('required', 'required');
+                                td.classList.add('triangle-red');
+                            } else {
+                                column.removeAttribute('required');
+                                td.classList.remove('triangle-red');
+                            }
+                        });
+                    }
+                });
+            });
+
+            let checkboxes = document.querySelectorAll('.columnCheckbox');
+
+            checkboxes.forEach(function (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    updateColumnStyles();
+                });
+            });
+
+            function updateColumnStyles() {
+                let leftSize = 0;
+
+                checkboxes.forEach(function (checkbox, index) {
+                    let columnIndex = index + 1;
+                    let isChecked = checkbox.checked;
+
+                    let columns = document.querySelectorAll('#gridTasks th:nth-child(' + columnIndex + '), #gridTasks td:nth-child(' + columnIndex + ')');
+
+                    columns.forEach(function (column) {
+                        if (isChecked) {
+                            column.classList.add('fixed');
+                            column.style.left = leftSize + 'px';
+                        } else {
+                            column.classList.remove('fixed');
+                            column.style.left = '';
+                        }
+                    });
+
+                    if (isChecked) {
+                        leftSize += columns[0].offsetWidth;
+                    }
+                });
+            }
+
+            let cells = document.querySelectorAll('.cellInput');
+            cells.forEach(function (cell) {
+                cell.addEventListener('change', function (e) {
+                    let td = findClosestTag(e.target, 'TD');
+                    if (e.target.value !== e.target.getAttribute('data-initial-value')) {
+                        td.classList.add('triangle-green');
+                    } else {
+                        td.classList.remove('triangle-green');
+                    }
+                });
+            });
+
+            let rows = document.querySelectorAll('#gridTasks tbody tr');
+            rows.forEach(function (row) {
+                row.addEventListener('click', function (e) {
+                    let trs = document.querySelectorAll('#gridTasks tbody tr');
+                    trs.forEach(function (tr) {
+                        tr.classList.remove('table-active');
+                    });
+                    let tr = findClosestTag(e.target, 'TR')
+                    if (tr) {
+                        tr.classList.toggle('table-active');
+                    }
+                });
+            });
+
+            function findClosestTag(element, tagName = 'TR') {
+                while (element && element.tagName !== tagName) {
+                    element = element.parentNode;
+                }
+                return element;
+            }
+
+            let currentCommentsTaskId = null;
+
+            function loadComments(taskId = currentCommentsTaskId) {
+                let container = document.getElementById('commentsTag');
+                container.innerHTML = '';
+                fetch('/api/v1/tasks/task/' + taskId + '/comments/')
+                    .then(response => response.json())
+                    .then(data => {
+                        let html = '';
+                        if (data.length === 0) {
+                            html = '<div class="alert alert-info" role="alert">{% trans 'No comments' %}</div>';
+                        } else {
+                            data.forEach(function (comment) {
+                                let card = `<div class="card mb-2" style="margin: auto;">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">` + comment.creator_full_name + `</h5>
+                                                    <h6 class="card-subtitle mb-2 text-muted">` + comment.created_at_pretty + `</h6>
+                                                    <p class="card-text">` + comment.text + `</p>
+                                                </div>
+                                            </div>`;
+                                html += card;
+                            });
+                        }
+                        container.innerHTML = html;
+                    });
+            }
+
+            let comments = document.querySelectorAll('.comments');
+            comments.forEach(function (comment) {
+                comment.addEventListener('click', function (e) {
+                    currentCommentsTaskId = findClosestTag(e.target, 'TD').getAttribute('data-task-id');
+                    loadComments();
+                    const commentsModal = new bootstrap.Modal(document.getElementById('commentsModal'), {
+                        focus: true,
+                        keyboard: false
+                    });
+                    commentsModal.show();
+                });
+            });
+
+            let sendMessageBtn = document.getElementById('sendMessageBtn');
+            sendMessageBtn.addEventListener('click', function () {
+                let commentTextarea = document.getElementById('commentTextarea');
+                let commentText = commentTextarea.value;
+                if (commentText) {
+                    fetch('/api/v1/tasks/task-comment/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            text: commentText,
+                            task: currentCommentsTaskId
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            commentTextarea.value = '';
+                            loadComments();
+                        });
+                }
+            });
+
+
+            let booleanCells = document.querySelectorAll('.booleanCell');
+            booleanCells.forEach(function (cell) {
+                cell.addEventListener('change', function (e) {
+                    let hiddenInput = document.getElementById('cell_' + e.target.getAttribute('data-cell-id'));
+                    if (cell.checked) {
+                        hiddenInput.value = '1';
+                    } else {
+                        hiddenInput.value = '0';
+                    }
+                });
+            });
+
+            let assignToMeBtn = document.getElementById('assignToMeBtn');
+            assignToMeBtn.addEventListener('click', async function (e) {
+                e.preventDefault();
+                let rowCheckboxes = document.querySelectorAll('.rowCheckboxes');
+                await rowCheckboxes.forEach(function (checkbox) {
+                    if (checkbox.checked) {
+                        let form = findClosestTag(e.target, 'FORM');
+                        let hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'assign';
+                        hiddenInput.value = 'true';
+                        form.appendChild(hiddenInput);
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+    </script>
+{% endblock %}

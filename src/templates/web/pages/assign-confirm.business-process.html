@@ -1,0 +1,261 @@
+{% extends 'web/base.html' %}
+{% load static i18n %}
+
+{% block content %}
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        thead th.fixed, thead td.fixed, tbody th.fixed, tbody td.fixed {
+            position: sticky;
+            z-index: 1;
+            left: 0;
+            right: auto;
+            background-color: #f2f2f2;
+        }
+
+        td {
+            position: relative;
+            padding-right: 10px;
+        }
+
+        .triangle-red:after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            border: 4px solid transparent;
+            border-top-color: red;
+            border-right-color: red;
+        }
+
+        .triangle-green:before {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            border: 4px solid transparent;
+            border-bottom-color: green;
+            border-right-color: green;
+        }
+    </style>
+    <div class="container-fluid">
+        <h3>{% trans "Assign confirmation" %}</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <div style="overflow-x: auto">
+                <table class="table table-bordered table-sm" style="font-size: 9pt;" id="gridTasks">
+                    <thead>
+                    <tr>
+                        {% for column in columns %}
+                            <th style="text-align: center; vertical-align: middle;">
+                                <div style="width: max-content" class="form-check">
+                                    <input type="checkbox" class="form-check-input columnCheckbox"
+                                           id="colCheckbox{{ column.id }}">
+                                    <label class="form-check-label"
+                                           for="colCheckbox{{ column.id }}">{{ column.column_name }}</label>
+                                </div>
+                            </th>
+                        {% endfor %}
+                        <th style="text-align: center; vertical-align: middle;">{% trans "Status" %}</th>
+                        <th style="text-align: center; vertical-align: middle;">{% trans "Comments" %}</th>
+                        <th style="text-align: center; vertical-align: middle; min-width: 150px !important;">{% trans "Date and time of approve" %}</th>
+                    </tr>
+                    </thead>
+
+                    {% csrf_token %}
+                    <tbody style="vertical-align: middle;">
+                    {% for row in tasks %}
+                        <tr>
+                            {% for cell in row.get_cells %}
+                                <td style="width: max-content;padding: 0;{% if cell.column.is_boolean %}text-align: center;{% endif %}">
+                                    {% if cell.column.is_boolean %}
+                                        {% if cell.value == '1' %}
+                                            <i class="fa-solid fa-circle-check" style="color: green;"></i>
+                                        {% elif cell.value == '0' %}
+                                            <i class="fa-solid fa-circle-xmark" style="color: red;"></i>
+                                        {% endif %}
+                                    {% else %}
+                                        {{ cell.value|default:"" }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                            <td>
+                                {{ row.get_status }}
+                            </td>
+                            <td style="text-align: center;" data-task-id="{{ row.id }}">
+                                <input type="hidden" name="row_id_{{ row.id }}" value="{{ row.id }}">
+                                <a href="#" class="icon-link icon-link-hover comments position-relative"
+                                   style="text-decoration:none;">
+                                    <i class="fa-solid fa-comment-dots"></i>
+                                    {% if row.comments_count %}
+                                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                    <span class="visually-hidden">New alerts</span></span>
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td>
+                                <div style="width: max-content;">{{ row.get_last_accepted_delegation }}</div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            <a href="javascript:history.back()" class="btn btn-sm btn-danger">{% trans "Cancel" %}</a>
+            <button class="btn btn-primary btn-sm" type="submit" name="assign_confirm"
+                    value="true">
+                <i class="fa-solid fa-user-secret"></i>
+                {% trans 'Confirm' %}
+            </button>
+        </form>
+    </div>
+
+    <div class="modal fade" id="commentsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="commentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="commentsModalLabel">{% trans 'Comments' %}</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="commentsTag">
+                    <div class="card" style="margin: auto;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ comment.created_by }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ comment.created_at_pretty }}</h6>
+                            <p class="card-text">{{ comment.text }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <textarea id="commentTextarea" class="form-control" rows="3"
+                              placeholder="{% trans 'Enter your comment...' %}"></textarea>
+                    <a id="sendMessageBtn" class="btn btn-primary btn-sm">{% trans "Send" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            let checkboxes = document.querySelectorAll('.columnCheckbox');
+
+            checkboxes.forEach(function (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    updateColumnStyles();
+                });
+            });
+
+            function updateColumnStyles() {
+                let leftSize = 0;
+
+                checkboxes.forEach(function (checkbox, index) {
+                    let columnIndex = index + 1;
+                    let isChecked = checkbox.checked;
+
+                    let columns = document.querySelectorAll('#gridTasks th:nth-child(' + columnIndex + '), #gridTasks td:nth-child(' + columnIndex + ')');
+
+                    columns.forEach(function (column) {
+                        if (isChecked) {
+                            column.classList.add('fixed');
+                            column.style.left = leftSize + 'px';
+                        } else {
+                            column.classList.remove('fixed');
+                            column.style.left = '';
+                        }
+                    });
+
+                    if (isChecked) {
+                        leftSize += columns[0].offsetWidth;
+                    }
+                });
+            }
+
+            function findClosestTag(element, tagName = 'TR') {
+                while (element && element.tagName !== tagName) {
+                    element = element.parentNode;
+                }
+                return element;
+            }
+
+            let currentCommentsTaskId = null;
+
+            function loadComments(taskId = currentCommentsTaskId) {
+                let container = document.getElementById('commentsTag');
+                container.innerHTML = '';
+                fetch('/api/v1/tasks/task/' + taskId + '/comments/')
+                    .then(response => response.json())
+                    .then(data => {
+                        let html = '';
+                        if (data.length === 0) {
+                            html = '<div class="alert alert-info" role="alert">{% trans 'No comments' %}</div>';
+                        } else {
+                            data.forEach(function (comment) {
+                                let card = `<div class="card mb-2" style="margin: auto;">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">` + comment.creator_full_name + `</h5>
+                                                    <h6 class="card-subtitle mb-2 text-muted">` + comment.created_at_pretty + `</h6>
+                                                    <p class="card-text">` + comment.text + `</p>
+                                                </div>
+                                            </div>`;
+                                html += card;
+                            });
+                        }
+                        container.innerHTML = html;
+                    });
+            }
+
+            let comments = document.querySelectorAll('.comments');
+            comments.forEach(function (comment) {
+                comment.addEventListener('click', function (e) {
+                    currentCommentsTaskId = findClosestTag(e.target, 'TD').getAttribute('data-task-id');
+                    loadComments();
+                    const commentsModal = new bootstrap.Modal(document.getElementById('commentsModal'), {
+                        focus: true,
+                        keyboard: false
+                    });
+                    commentsModal.show();
+                });
+            });
+
+            let sendMessageBtn = document.getElementById('sendMessageBtn');
+            sendMessageBtn.addEventListener('click', function () {
+                let commentTextarea = document.getElementById('commentTextarea');
+                let commentText = commentTextarea.value;
+                if (commentText) {
+                    fetch('/api/v1/tasks/task-comment/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            text: commentText,
+                            task: currentCommentsTaskId
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            commentTextarea.value = '';
+                            loadComments();
+                        });
+                }
+            });
+
+        })
+        ;
+
+    </script>
+{% endblock %}

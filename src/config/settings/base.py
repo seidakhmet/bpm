@@ -53,6 +53,8 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "django_object_actions",
     "rest_framework",
+    "corsheaders",
+    "debug_toolbar",
 ]
 LOCAL_APPS = [
     "apps.common.apps.CommonConfig",
@@ -67,11 +69,13 @@ INSTALLED_APPS = BEFORE_DJANGO_APPS + DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APP
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -202,4 +206,20 @@ LOGGING = {
             "level": os.getenv("LOG_LEVEL", "INFO"),
         },
     },
+}
+
+
+CORS_ALLOWED_ORIGINS = [
+    "https://10.61.40.95:9443",
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+    }
 }

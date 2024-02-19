@@ -6,7 +6,7 @@
 
         <thead>
         <tr>
-            <td colspan="7">
+            <td colspan="8">
                 <a class="btn btn-outline-primary btn-sm"
                    href="{% url 'add-business-process' %}">{% trans 'Add business process' %}</a>
             </td>
@@ -19,6 +19,8 @@
             <th>{% trans 'Created by' %}</th>
             <th>{% trans 'Updated at' %}</th>
             <th>{% trans 'Created at' %}</th>
+            <th>{% trans 'Action' %}</th>
+
         </tr>
         </thead>
         <tbody>
@@ -26,13 +28,21 @@
             <tr>
                 <td>{{ business_process.id }}</td>
                 <td>
-                    <a href="{% url 'detail-business-process' pk=business_process.id %}">{{ business_process.title }}</a>
+                    <a href="{% url 'tasks-business-process' pk=business_process.id %}">{{ business_process.title }}</a>
                 </td>
                 <td>{{ business_process.get_status_display }}</td>
                 <td>{{ business_process.get_min_bpm_group_display }}</td>
                 <td>{{ business_process.created_by }}</td>
                 <td>{{ business_process.updated_at_pretty }}</td>
                 <td>{{ business_process.created_at_pretty }}</td>
+                <th>
+                    {% if business_process.created_by == user %}
+                        <a class="btn btn-outline-info btn-sm"
+                           href="{% url 'detail-business-process' pk=business_process.id %}">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    {% endif %}
+                </th>
             </tr>
         {% endfor %}
         </tbody>

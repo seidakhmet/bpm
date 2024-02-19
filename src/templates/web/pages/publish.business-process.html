@@ -1,0 +1,18 @@
+{% extends 'web/base.html' %}
+{% load static i18n %}
+
+{% block content %}
+    <div class="container">
+        <h3>{% trans "Publish business process" %}: {{ object.uuid }}</h3>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% trans "Do you want to publish tasks?" %}
+            {% for field in form %}
+                {{ field }}
+            {% endfor %}
+            <hr>
+            <a href="javascript:history.back()" class="btn btn-sm btn-danger">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-sm btn-primary" name="publish" value="true">{% trans 'Publish' %}</button>
+        </form>
+    </div>
+{% endblock %}
