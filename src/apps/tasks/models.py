@@ -111,28 +111,9 @@ class TaskColumn(mixins_models.TimestampModel):
     def __str__(self):
         return f"{self.business_process}[{self.column_name}]"
 
-    def input_type(self):
-        if self.column_type == TaskColumnTypes.STRING:
-            return "text"
-        elif self.column_type == TaskColumnTypes.TEXT:
-            return "textarea"
-        elif self.column_type == TaskColumnTypes.INTEGER:
-            return "number"
-        elif self.column_type == TaskColumnTypes.FLOAT:
-            return "number"
-        elif self.column_type == TaskColumnTypes.DATE:
-            return "date"
-        elif self.column_type == TaskColumnTypes.DATE_TIME:
-            return "datetime-local"
-        elif self.column_type == TaskColumnTypes.BOOLEAN:
-            return "checkbox"
-        return "text"
-
-    def is_boolean(self):
-        return self.column_type == TaskColumnTypes.BOOLEAN
-
-    def is_text(self):
-        return self.column_type == TaskColumnTypes.TEXT
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+        self.cells.update(column_index=self.column_index, column_type=self.column_type, is_editable=self.is_editable)
 
 
 class TaskStatus(mixins_models.TimestampModel):
@@ -307,9 +288,16 @@ class TaskCell(mixins_models.TimestampModel):
 
     value: str = models.TextField(verbose_name=_("Value"), null=True, blank=True)
 
+    column_index: int = models.IntegerField(verbose_name=_("Column index"), default=0)
+    column_type: str = models.CharField(
+        verbose_name=_("Column type"), max_length=50, choices=TaskColumnTypes.choices, default=TaskColumnTypes.STRING
+    )
+    is_editable: bool = models.BooleanField(verbose_name=_("Is editable"), default=True)
+
     class Meta:
         verbose_name = _("Task cell")
         verbose_name_plural = _("Task cells")
+        ordering = ("id",)
 
     @property
     def get_template_value(self):
@@ -325,6 +313,29 @@ class TaskCell(mixins_models.TimestampModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._initial_value = self.value
+
+    def input_type(self):
+        if self.column_type == TaskColumnTypes.STRING:
+            return "text"
+        elif self.column_type == TaskColumnTypes.TEXT:
+            return "textarea"
+        elif self.column_type == TaskColumnTypes.INTEGER:
+            return "number"
+        elif self.column_type == TaskColumnTypes.FLOAT:
+            return "number"
+        elif self.column_type == TaskColumnTypes.DATE:
+            return "date"
+        elif self.column_type == TaskColumnTypes.DATE_TIME:
+            return "datetime-local"
+        elif self.column_type == TaskColumnTypes.BOOLEAN:
+            return "checkbox"
+        return "text"
+
+    def is_boolean(self):
+        return self.column_type == TaskColumnTypes.BOOLEAN
+
+    def is_text(self):
+        return self.column_type == TaskColumnTypes.TEXT
 
 
 class TaskCellValueLog(mixins_models.TimestampModel):

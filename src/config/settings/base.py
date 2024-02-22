@@ -3,6 +3,8 @@ import logging
 import os
 from distutils.util import strtobool
 
+from django.utils.translation import gettext_lazy as _
+
 try:
     import environ
 except ModuleNotFoundError:
@@ -54,7 +56,6 @@ THIRD_PARTY_APPS = [
     "django_object_actions",
     "rest_framework",
     "corsheaders",
-    "debug_toolbar",
 ]
 LOCAL_APPS = [
     "apps.common.apps.CommonConfig",
@@ -75,7 +76,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -134,6 +134,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = "ru-ru"
+
+LANGUAGES = (("ru-ru", _("Russian language")),)
+
+LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
 
 TIME_ZONE = "Asia/Almaty"
 
@@ -223,3 +227,5 @@ CACHES = {
         "LOCATION": "unique-snowflake",
     }
 }
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 40960

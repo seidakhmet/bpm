@@ -60,6 +60,16 @@ class User(mixin_models.TimestampModel, django_auth_models.AbstractUser):
         verbose_name = _("User")
         verbose_name_plural = _("Users")
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.bpm_full_name:
+            self.bpm_full_name = self.full_name if self.full_name else self.username
+            self.save(
+                update_fields=[
+                    "bpm_full_name",
+                ]
+            )
+
     @property
     def full_name(self) -> str:
         return self.bpm_full_name or " ".join([self.first_name, self.last_name])

@@ -1,11 +1,14 @@
+import pandas as pd
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import Count, Q, Case, When, BooleanField, Max, IntegerField, OuterRef, Subquery
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic, View
 from django.views.generic.edit import DeleteView
+from django.utils.translation import gettext_lazy as _
 
 from apps.web.forms import BusinessProcessForm, TaskStatusForm, PublishBusinessProcessForm
 from apps.tasks import TaskColumnTypes, models as tasks_models, TaskDelegationStatuses, BusinessProcessStatuses
@@ -200,6 +203,33 @@ class TaskView(LoginRequiredMixin, generic.DetailView):
     last_delegation_created_by_subquery = (
         tasks_models.TaskDelegation.objects.filter(task=OuterRef("pk")).order_by("-created_at").values("created_by")[:1]
     )
+    last_delegation_delegated_to_username_subquery = (
+        tasks_models.TaskDelegation.objects.filter(task=OuterRef("pk"))
+        .order_by("-created_at")
+        .values("delegated_to__bpm_full_name")[:1]
+    )
+    last_delegation_delegated_to_bpm_group_name_subquery = (
+        tasks_models.TaskDelegation.objects.filter(task=OuterRef("pk"))
+        .order_by("-created_at")
+        .values("delegated_to_bpm_group__bpm_group_name")[:1]
+    )
+
+    last_delegation_created_by_username_subquery = (
+        tasks_models.TaskDelegation.objects.filter(task=OuterRef("pk"))
+        .order_by("-created_at")
+        .values("created_by__bpm_full_name")[:1]
+    )
+    last_delegation_created_at_subquery = (
+        tasks_models.TaskDelegation.objects.filter(task=OuterRef("pk")).order_by("-created_at").values("created_at")[:1]
+    )
+    last_delegation_created_by_delegated_subquery = (
+        tasks_models.TaskDelegation.objects.filter(
+            task=OuterRef("pk"),
+            status__in=[TaskDelegationStatuses.DELEGATED_TO_USER, TaskDelegationStatuses.DELEGATED_TO_GROUP],
+        )
+        .order_by("-created_at")
+        .values("created_by__bpm_full_name")[:1]
+    )
 
     def get_queryset(self):
         queryset = tasks_models.BusinessProcess.objects.filter(
@@ -209,14 +239,22 @@ class TaskView(LoginRequiredMixin, generic.DetailView):
         ).distinct()
         return queryset
 
-    def my_tasks(self, request, query: str = ""):
+    def my_tasks(self, request, query: str = "", filter_status=None):
+        if filter_status is None:
+            filter_status = ["0"]
+        if filter_status != ["0"]:
+            queryset = self.object.tasks.filter(status__in=filter_status)
+        else:
+            queryset = self.object.tasks.all()
         queryset = (
-            self.object.tasks.prefetch_related("cells", "delegations")
+            queryset.prefetch_related("cells", "delegations")
             .annotate(
                 last_delegation_status=Subquery(self.last_delegation_status_subquery),
                 last_delegation_delegated_to=Subquery(self.last_delegation_delegated_to_subquery),
                 last_delegation_delegated_to_bpm_group=Subquery(self.last_delegation_delegated_to_bpm_group_subquery),
                 last_delegation_created_by=Subquery(self.last_delegation_created_by_subquery),
+                last_delegation_created_by_username=Subquery(self.last_delegation_created_by_username_subquery),
+                last_delegation_created_by_delegated=Subquery(self.last_delegation_created_by_delegated_subquery),
             )
             .filter(
                 last_delegation_delegated_to=request.user,
@@ -237,13 +275,20 @@ class TaskView(LoginRequiredMixin, generic.DetailView):
             .order_by("index")
             .distinct()
         )
+
         if query:
             queryset = queryset.filter(cells__value__icontains=query).distinct()
         return queryset
 
-    def group_tasks(self, request, query: str = ""):
+    def group_tasks(self, request, query: str = "", filter_status=None):
+        if filter_status is None:
+            filter_status = ["0"]
+        if filter_status != ["0"]:
+            queryset = self.object.tasks.filter(status__in=filter_status)
+        else:
+            queryset = self.object.tasks.all()
         queryset = (
-            self.object.tasks.prefetch_related("cells", "delegations")
+            queryset.prefetch_related("cells", "delegations")
             .annotate(
                 last_delegation_status=Subquery(self.last_delegation_status_subquery),
                 last_delegation_delegated_to=Subquery(self.last_delegation_delegated_to_subquery),
@@ -276,14 +321,24 @@ class TaskView(LoginRequiredMixin, generic.DetailView):
             queryset = queryset.filter(cells__value__icontains=query).distinct()
         return queryset
 
-    def delegated_tasks(self, request, query: str = ""):
+    def delegated_tasks(self, request, query: str = "", filter_status=None):
+        if filter_status is None:
+            filter_status = ["0"]
+        if filter_status != ["0"]:
+            queryset = self.object.tasks.filter(status__in=filter_status)
+        else:
+            queryset = self.object.tasks.all()
         queryset = (
-            self.object.tasks.prefetch_related("cells", "delegations")
+            queryset.prefetch_related("cells", "delegations")
             .annotate(
                 last_delegation_status=Subquery(self.last_delegation_status_subquery),
                 last_delegation_delegated_to=Subquery(self.last_delegation_delegated_to_subquery),
                 last_delegation_delegated_to_bpm_group=Subquery(self.last_delegation_delegated_to_bpm_group_subquery),
                 last_delegation_created_by=Subquery(self.last_delegation_created_by_subquery),
+                last_delegation_delegated_to_username=Subquery(self.last_delegation_delegated_to_username_subquery),
+                last_delegation_delegated_to_bpm_group_name=Subquery(
+                    self.last_delegation_delegated_to_bpm_group_name_subquery
+                ),
             )
             .filter(
                 delegations__created_by=request.user,
@@ -309,19 +364,26 @@ class TaskView(LoginRequiredMixin, generic.DetailView):
             .order_by("index")
             .distinct()
         )
-        print(queryset.query)
         if query:
             queryset = queryset.filter(cells__value__icontains=query).distinct()
         return queryset
 
-    def approve_tasks(self, request, query: str = ""):
+    def approve_tasks(self, request, query: str = "", filter_status=None):
+        if filter_status is None:
+            filter_status = ["0"]
+        if filter_status != ["0"]:
+            queryset = self.object.tasks.filter(status__in=filter_status)
+        else:
+            queryset = self.object.tasks.all()
         queryset = (
-            self.object.tasks.prefetch_related("cells", "delegations")
+            queryset.prefetch_related("cells", "delegations")
             .annotate(
                 last_delegation_status=Subquery(self.last_delegation_status_subquery),
                 last_delegation_delegated_to=Subquery(self.last_delegation_delegated_to_subquery),
                 last_delegation_delegated_to_bpm_group=Subquery(self.last_delegation_delegated_to_bpm_group_subquery),
                 last_delegation_created_by=Subquery(self.last_delegation_created_by_subquery),
+                last_delegation_created_by_username=Subquery(self.last_delegation_created_by_username_subquery),
+                last_delegation_created_at=Subquery(self.last_delegation_created_at_subquery),
             )
             .filter(
                 last_delegation_delegated_to=request.user,
@@ -345,13 +407,16 @@ class TaskView(LoginRequiredMixin, generic.DetailView):
             queryset = queryset.filter(cells__value__icontains=query).distinct()
         return queryset
 
-    def get_tasks_queryset(self, request, query: str = ""):
-        return self.my_tasks(request, query)
+    def get_tasks_queryset(self, request, query: str = "", filter_status=None):
+        if filter_status is None:
+            filter_status = ["0"]
+        return self.my_tasks(request, query, filter_status)
 
     def get_tasks(self, request):
         query = request.GET.get("query", "")
+        filter_status = request.GET.getlist("filter_status", ["0"])
         page_number = request.GET.get("page", 1)
-        queryset = self.get_tasks_queryset(request, query)
+        queryset = self.get_tasks_queryset(request, query, filter_status)
         paginator = Paginator(queryset, 50)
         page_obj = paginator.get_page(page_number)
         context = self.get_context_data(object=self.object)
@@ -364,13 +429,47 @@ class TaskView(LoginRequiredMixin, generic.DetailView):
         context["approve_tasks_count"] = self.approve_tasks(request).count()
 
         context["query"] = query
+        context["filter_status"] = [int(status) for status in filter_status]
 
         context["tasks"] = page_obj
         context["statuses"] = self.object.statuses.all().order_by("status_name")
         return context
 
+    def get_excel(self, request):
+        query = request.GET.get("query", "")
+        filter_status = request.GET.getlist("filter_status", ["0"])
+        data = []
+        for row in self.get_tasks_queryset(request, query, filter_status):
+            cells = list(row.cells.all().order_by("id").values_list("value", flat=True))
+            cells.append(row.status.status_name if row.status else None)
+            data.append(cells)
+        columns = list(self.object.columns.all().order_by("column_index").values_list("column_name", flat=True))
+        columns.append(_("Status"))
+        df = pd.DataFrame(
+            columns=columns,
+            data=data,
+        )
+        file_name = f"{self.object.business_process_name}_{self.object.pk}_tasks"
+        response = HttpResponse(content_type="application/xlsx")
+        response["Content-Disposition"] = f'attachment; filename="{file_name}.xlsx"'
+        with pd.ExcelWriter(response, engine="xlsxwriter") as writer:
+            df.to_excel(
+                writer,
+                sheet_name="Sheet1",
+                index=False,
+                header=True,
+            )
+            for column in df:
+                column_width = max(df[column].astype(str).map(len).max(), len(column))
+                col_idx = df.columns.get_loc(column)
+                writer.sheets["Sheet1"].set_column(col_idx, col_idx, column_width)
+        return response
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+        download_excel = request.GET.getlist("download_excel", False)
+        if download_excel:
+            return self.get_excel(request)
         context = self.get_tasks(request)
         return self.render_to_response(context)
 
@@ -485,13 +584,10 @@ class TaskView(LoginRequiredMixin, generic.DetailView):
 class GroupTaskView(TaskView):
     template_name = "web/pages/group-tasks.business-process.html"
 
-    def get_tasks_queryset(self, request, query: str = ""):
-        return self.group_tasks(request, query)
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        context = self.get_tasks(request)
-        return self.render_to_response(context)
+    def get_tasks_queryset(self, request, query: str = "", filter_status=None):
+        if filter_status is None:
+            filter_status = ["0"]
+        return self.group_tasks(request, query, filter_status)
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -550,13 +646,10 @@ class GroupTaskView(TaskView):
 class DelegatedTaskView(TaskView):
     template_name = "web/pages/delegated-tasks.business-process.html"
 
-    def get_tasks_queryset(self, request, query: str = ""):
-        return self.delegated_tasks(request, query)
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        context = self.get_tasks(request)
-        return self.render_to_response(context)
+    def get_tasks_queryset(self, request, query: str = "", filter_status=None):
+        if filter_status is None:
+            filter_status = ["0"]
+        return self.delegated_tasks(request, query, filter_status)
 
     def post(self, request, *args, **kwargs):
         pass
@@ -565,13 +658,10 @@ class DelegatedTaskView(TaskView):
 class ApproveTaskView(TaskView):
     template_name = "web/pages/approve-tasks.business-process.html"
 
-    def get_tasks_queryset(self, request, query: str = ""):
-        return self.approve_tasks(request, query)
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        context = self.get_tasks(request)
-        return self.render_to_response(context)
+    def get_tasks_queryset(self, request, query: str = "", filter_status=None):
+        if filter_status is None:
+            filter_status = ["0"]
+        return self.approve_tasks(request, query, filter_status)
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()

@@ -75,9 +75,9 @@
                     <tbody style="vertical-align: middle;">
                     {% for row in tasks %}
                         <tr>
-                            {% for cell in row.get_cells %}
-                                <td style="width: max-content;padding: 0;{% if cell.column.is_boolean %}text-align: center;{% endif %}">
-                                    {% if cell.column.is_boolean %}
+                            {% for cell in row.cells.all %}
+                                <td style="width: max-content;padding: 0;{% if cell.is_boolean %}text-align: center;{% endif %}">
+                                    {% if cell.is_boolean %}
                                         {% if cell.value == '1' %}
                                             <i class="fa-solid fa-circle-check" style="color: green;"></i>
                                         {% elif cell.value == '0' %}

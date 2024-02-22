@@ -1,0 +1,975 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-22 11:18+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+#: apps/api/utils.py:13
+msgid "RSA key not found"
+msgstr "RSA ключ не найден"
+
+#: apps/common/apps.py:8
+msgid "Logging"
+msgstr "Логирование"
+
+#: apps/common/mixins/models.py:12 apps/common/mixins/models.py:25
+msgid "Created time"
+msgstr "Время создания"
+
+#: apps/common/mixins/models.py:15 apps/common/mixins/models.py:31
+msgid "Last change time"
+msgstr "Время последнего изменения"
+
+#: apps/common/mixins/models.py:36
+msgid "First name"
+msgstr "Имя"
+
+#: apps/common/mixins/models.py:37
+msgid "Last name"
+msgstr "Фамилия"
+
+#: apps/common/mixins/models.py:38
+msgid "Middle name"
+msgstr "Отчество"
+
+#: apps/common/mixins/models.py:49
+msgid "UUID identification"
+msgstr "UUID идентификатор"
+
+#: apps/tasks/__init__.py:8
+msgid "Created"
+msgstr "Создано"
+
+#: apps/tasks/__init__.py:9
+msgid "Published"
+msgstr "Опубликовано"
+
+#: apps/tasks/__init__.py:10
+msgid "Completed"
+msgstr "Завершено"
+
+#: apps/tasks/__init__.py:11
+msgid "Canceled"
+msgstr "Отменено"
+
+#: apps/tasks/__init__.py:17
+msgid "String"
+msgstr "Текстовая строка"
+
+#: apps/tasks/__init__.py:18 apps/tasks/models.py:375
+msgid "Text"
+msgstr "Текст"
+
+#: apps/tasks/__init__.py:19
+msgid "Integer"
+msgstr "Целое число"
+
+#: apps/tasks/__init__.py:20
+msgid "Float"
+msgstr "Дробное число"
+
+#: apps/tasks/__init__.py:21
+msgid "Date"
+msgstr "Дата"
+
+#: apps/tasks/__init__.py:22
+msgid "Date and time"
+msgstr "Дата и время"
+
+#: apps/tasks/__init__.py:23
+msgid "Boolean"
+msgstr "Логический (Да/Нет)"
+
+#: apps/tasks/__init__.py:29
+msgid "Delegated to user"
+msgstr "Назначено на пользователя"
+
+#: apps/tasks/__init__.py:30 apps/tasks/models.py:408
+msgid "Delegated to group"
+msgstr "Назначено на группу"
+
+#: apps/tasks/__init__.py:31
+msgid "Self-delegated"
+msgstr "Назначено на себя"
+
+#: apps/tasks/__init__.py:32
+msgid "Returned to delegator"
+msgstr "Возвращено назначившему"
+
+#: apps/tasks/__init__.py:33
+msgid "Sent to approval"
+msgstr "Отправлено на утверждение"
+
+#: apps/tasks/__init__.py:34
+msgid "Sent to rework"
+msgstr "Отправлено на доработку"
+
+#: apps/tasks/__init__.py:40
+msgid "A column"
+msgstr "Столбец A"
+
+#: apps/tasks/__init__.py:41
+msgid "B column"
+msgstr "Столбец B"
+
+#: apps/tasks/__init__.py:42
+msgid "C column"
+msgstr "Столбец C"
+
+#: apps/tasks/__init__.py:43
+msgid "D column"
+msgstr "Столбец D"
+
+#: apps/tasks/__init__.py:44
+msgid "E column"
+msgstr "Столбец E"
+
+#: apps/tasks/__init__.py:45
+msgid "F column"
+msgstr "Столбец F"
+
+#: apps/tasks/__init__.py:46
+msgid "G column"
+msgstr "Столбец G"
+
+#: apps/tasks/__init__.py:47
+msgid "H column"
+msgstr "Столбец H"
+
+#: apps/tasks/__init__.py:48
+msgid "I column"
+msgstr "Столбец I"
+
+#: apps/tasks/__init__.py:49
+msgid "J column"
+msgstr "Столбец J"
+
+#: apps/tasks/__init__.py:50
+msgid "K column"
+msgstr "Столбец K"
+
+#: apps/tasks/__init__.py:51
+msgid "L column"
+msgstr "Столбец L"
+
+#: apps/tasks/__init__.py:52
+msgid "M column"
+msgstr "Столбец M"
+
+#: apps/tasks/__init__.py:53
+msgid "N column"
+msgstr "Столбец N"
+
+#: apps/tasks/__init__.py:54
+msgid "O column"
+msgstr "Столбец O"
+
+#: apps/tasks/__init__.py:55
+msgid "P column"
+msgstr "Столбец P"
+
+#: apps/tasks/__init__.py:56
+msgid "Q column"
+msgstr "Столбец Q"
+
+#: apps/tasks/__init__.py:57
+msgid "R column"
+msgstr "Столбец R"
+
+#: apps/tasks/__init__.py:58
+msgid "S column"
+msgstr "Столбец S"
+
+#: apps/tasks/__init__.py:59
+msgid "T column"
+msgstr "Столбец T"
+
+#: apps/tasks/__init__.py:60
+msgid "U column"
+msgstr "Столбец U"
+
+#: apps/tasks/__init__.py:61
+msgid "V column"
+msgstr "Столбец V"
+
+#: apps/tasks/__init__.py:62
+msgid "W column"
+msgstr "Столбец W"
+
+#: apps/tasks/__init__.py:63
+msgid "X column"
+msgstr "Столбец X"
+
+#: apps/tasks/__init__.py:64
+msgid "Y column"
+msgstr "Столбец Y"
+
+#: apps/tasks/__init__.py:65
+msgid "Z column"
+msgstr "Столбец Z"
+
+#: apps/tasks/admin.py:58 apps/tasks/admin.py:96
+msgid "Task index"
+msgstr "Индекс задачи"
+
+#: apps/tasks/admin.py:63 apps/tasks/admin.py:101 apps/tasks/models.py:101
+msgid "Column name"
+msgstr "Наименование столбца"
+
+#: apps/tasks/admin.py:91 apps/tasks/models.py:74 apps/tasks/models.py:126
+#: apps/tasks/models.py:150 apps/tasks/models.py:278
+msgid "Business process"
+msgstr "Бизнес процесс"
+
+#: apps/tasks/models.py:34 templates/web/pages/detail.business-process.html:19
+#: templates/web/pages/index.html:16 templates/web/pages/task_detail.html:17
+msgid "Title"
+msgstr "Наименование"
+
+#: apps/tasks/models.py:35 templates/web/pages/detail.business-process.html:23
+#: templates/web/pages/task_detail.html:25
+msgid "Description"
+msgstr "Описание"
+
+#: apps/tasks/models.py:38 templates/web/pages/detail.business-process.html:37
+msgid "DGD code column"
+msgstr "Столбец кода ДГД"
+
+#: apps/tasks/models.py:43 templates/web/pages/detail.business-process.html:41
+msgid "DGD name column"
+msgstr "Столбец наименования ДГД"
+
+#: apps/tasks/models.py:48 templates/web/pages/detail.business-process.html:45
+msgid "UGD code column"
+msgstr "Столбец кода УГД"
+
+#: apps/tasks/models.py:56 apps/tasks/models.py:162 apps/tasks/models.py:399
+#: apps/web/views/business_process.py:447
+#: templates/web/pages/approve-confirm.business-process.html:68
+#: templates/web/pages/approve-tasks.business-process.html:159
+#: templates/web/pages/assign-all.business-process.html:68
+#: templates/web/pages/assign-confirm.business-process.html:68
+#: templates/web/pages/delegated-tasks.business-process.html:153
+#: templates/web/pages/delegating.business-process.html:68
+#: templates/web/pages/detail.business-process.html:49
+#: templates/web/pages/group-tasks.business-process.html:158
+#: templates/web/pages/index.html:17
+#: templates/web/pages/reject-confirm.business-process.html:68
+#: templates/web/pages/send-to-approve-confirm.business-process.html:68
+#: templates/web/pages/task_detail.html:36
+#: templates/web/pages/tasks.business-process.html:155
+msgid "Status"
+msgstr "Статус"
+
+#: apps/tasks/models.py:62
+msgid "Min BPM group"
+msgstr "Минимальная группа BPM"
+
+#: apps/tasks/models.py:66
+msgid "Minimum BPM group that can work with this business process"
+msgstr "Минимальная группа BPM, которая может работать с этим бизнес процессом"
+
+#: apps/tasks/models.py:70 apps/tasks/models.py:356 apps/tasks/models.py:379
+#: apps/tasks/models.py:427 templates/web/pages/detail.business-process.html:57
+#: templates/web/pages/index.html:19 templates/web/pages/task_detail.html:41
+msgid "Created by"
+msgstr "Кем создано"
+
+#: apps/tasks/models.py:75
+msgid "Business processes"
+msgstr "Бизнес процессы"
+
+#: apps/tasks/models.py:97 apps/tasks/models.py:166 apps/tasks/models.py:167
+#: apps/tasks/models.py:287 apps/tasks/models.py:373 apps/tasks/models.py:396
+msgid "Task"
+msgstr "Задача"
+
+#: apps/tasks/models.py:100 apps/tasks/models.py:291
+msgid "Column index"
+msgstr "Индекс столбца"
+
+#: apps/tasks/models.py:103 apps/tasks/models.py:293
+msgid "Column type"
+msgstr "Тип столбца"
+
+#: apps/tasks/models.py:105 apps/tasks/models.py:295
+#: templates/web/pages/detail.business-process.html:112
+#: templates/web/pages/edit-columns.business-process.html:19
+msgid "Is editable"
+msgstr "Редактируемый"
+
+#: apps/tasks/models.py:108 apps/tasks/models.py:283
+msgid "Task column"
+msgstr "Столбец задачи"
+
+#: apps/tasks/models.py:109
+msgid "Task columns"
+msgstr "Столбцы задачи"
+
+#: apps/tasks/models.py:129
+msgid "Status name"
+msgstr "Наименование статуса"
+
+#: apps/tasks/models.py:132
+msgid "Required task columns"
+msgstr "Обязательные к заполнению столбцы задачи"
+
+#: apps/tasks/models.py:136
+#: templates/web/pages/form.status.business-process.html:6
+msgid "Task status"
+msgstr "Статус задачи"
+
+#: apps/tasks/models.py:137
+msgid "Task statuses"
+msgstr "Статусы задачи"
+
+#: apps/tasks/models.py:153
+#: templates/web/pages/detail.business-process.html:109
+#: templates/web/pages/edit-columns.business-process.html:16
+#: templates/web/pages/statuses.detail.business-process.html:23
+msgid "Index"
+msgstr "Индекс"
+
+#: apps/tasks/models.py:155
+msgid "DGD code"
+msgstr "Код ДГД"
+
+#: apps/tasks/models.py:156
+msgid "DGD code number"
+msgstr "Цифровой код ДГД"
+
+#: apps/tasks/models.py:157
+msgid "DGD name"
+msgstr "Наименование ДГД"
+
+#: apps/tasks/models.py:158
+msgid "UGD code"
+msgstr "Код УГД"
+
+#: apps/tasks/models.py:194
+#: templates/web/pages/delegated-tasks.business-process.html:208
+msgid "No delegation"
+msgstr "Не назначено"
+
+#: apps/tasks/models.py:203
+msgid "No executor"
+msgstr "Нет исполнителя"
+
+#: apps/tasks/models.py:237
+msgid "No worker"
+msgstr "Нет работника"
+
+#: apps/tasks/models.py:289
+msgid "Value"
+msgstr "Значение"
+
+#: apps/tasks/models.py:298 apps/tasks/models.py:348
+msgid "Task cell"
+msgstr "Ячейка задачи"
+
+#: apps/tasks/models.py:299
+msgid "Task cells"
+msgstr "Ячейки задачи"
+
+#: apps/tasks/models.py:351
+msgid "Old value"
+msgstr "Прежнее значение"
+
+#: apps/tasks/models.py:352
+msgid "New value"
+msgstr "Новое значение"
+
+#: apps/tasks/models.py:360
+msgid "Task cell value log"
+msgstr "Лог значения ячейки задачи"
+
+#: apps/tasks/models.py:361
+msgid "Task cell value logs"
+msgstr "Логи значения ячеек задачи"
+
+#: apps/tasks/models.py:383
+msgid "Task comment"
+msgstr "Комментарий к задаче"
+
+#: apps/tasks/models.py:384
+msgid "Task comments"
+msgstr "Комментарии к задаче"
+
+#: apps/tasks/models.py:418
+msgid "Delegated to"
+msgstr "На кого назначено"
+
+#: apps/tasks/models.py:431
+msgid "Task delegation"
+msgstr "Назначение задачи"
+
+#: apps/tasks/models.py:432
+msgid "Task delegations"
+msgstr "Назначения задачи"
+
+#: apps/tasks/parsers/__init__.py:14
+msgid "Excel file is not found"
+msgstr "Excel файл не найден"
+
+#: apps/users/admin.py:24
+msgid "Personal info"
+msgstr "Личная информация"
+
+#: apps/users/admin.py:35
+msgid "BPM info"
+msgstr "Информация из BPM"
+
+#: apps/users/admin.py:47
+msgid "Permissions"
+msgstr "Права доступа"
+
+#: apps/users/admin.py:58
+msgid "Important dates"
+msgstr "Важные даты"
+
+#: apps/users/admin.py:97
+#: templates/web/pages/delegating.business-process.html:117
+msgid "Groups"
+msgstr "Группы"
+
+#: apps/users/admin.py:103
+msgid "Full name"
+msgstr "Полное имя"
+
+#: apps/users/admin.py:118 apps/users/admin.py:119
+msgid "Sync BPM users"
+msgstr "Синхронизировать пользователей BPM"
+
+#: apps/users/admin.py:123
+msgid "BPM users successfully synchronized."
+msgstr "Синхронизация пользователей BPM успешно завершена."
+
+#: apps/users/admin.py:131 apps/users/models.py:109
+msgid "RSA Key"
+msgstr "RSA ключ"
+
+#: apps/users/admin.py:154 apps/users/models.py:27
+msgid "BPM Group"
+msgstr "Группа BPM"
+
+#: apps/users/admin.py:171 apps/users/admin.py:172
+msgid "Sync BPM groups"
+msgstr "Синхронизировать группы BPM"
+
+#: apps/users/admin.py:176
+msgid "BPM groups successfully synchronized."
+msgstr "Синхронизация групп BPM успешно завершена."
+
+#: apps/users/admin.py:194 apps/users/models.py:105
+msgid "Is active"
+msgstr "Активен"
+
+#: apps/users/models.py:21
+msgid "BPM group ID"
+msgstr "Идентификатор группы BPM"
+
+#: apps/users/models.py:22
+msgid "BPM group name"
+msgstr "Наименование группы BPM"
+
+#: apps/users/models.py:28
+msgid "BPM Groups"
+msgstr "Группы BPM"
+
+#: apps/users/models.py:46
+msgid "Is developer"
+msgstr "Является разработчиком"
+
+#: apps/users/models.py:48
+msgid "BPM user ID"
+msgstr "Идентификатор пользователя BPM"
+
+#: apps/users/models.py:49
+msgid "BPM full name"
+msgstr "Полное имя пользователя BPM"
+
+#: apps/users/models.py:50
+msgid "BPM is disabled"
+msgstr "Пользователь BPM отключен"
+
+#: apps/users/models.py:51
+msgid "BPM email"
+msgstr "Email пользователя BPM"
+
+#: apps/users/models.py:54
+msgid "BPM groups"
+msgstr "Группы BPM"
+
+#: apps/users/models.py:60 apps/users/models.py:141
+msgid "User"
+msgstr "Пользователь"
+
+#: apps/users/models.py:61
+#: templates/web/pages/delegating.business-process.html:129
+msgid "Users"
+msgstr "Пользователи"
+
+#: apps/users/models.py:101
+msgid "Key name"
+msgstr "Наименование ключа"
+
+#: apps/users/models.py:102
+msgid "Public key"
+msgstr "Открытый ключ"
+
+#: apps/users/models.py:103
+msgid "Private key"
+msgstr "Закрытый ключ"
+
+#: apps/users/models.py:106
+msgid "Is test"
+msgstr "Тестовый"
+
+#: apps/users/models.py:110
+msgid "RSA Keys"
+msgstr "RSA ключи"
+
+#: apps/users/models.py:142
+msgid "Is used"
+msgstr "Использован"
+
+#: apps/users/models.py:143
+msgid "RSA key UUID"
+msgstr "UUID RSA ключа"
+
+#: apps/users/models.py:144
+msgid "Request data"
+msgstr "Данные запроса"
+
+#: apps/users/models.py:147
+msgid "User token"
+msgstr "Токен пользователя"
+
+#: apps/users/models.py:148
+msgid "User tokens"
+msgstr "Токены пользователей"
+
+#: config/settings/base.py:138
+msgid "Russian language"
+msgstr "Русский язык"
+
+#: templates/admin/action_confirmation.html:8
+msgid "Are you sure you want to"
+msgstr "Вы уверены, что хотите"
+
+#: templates/admin/action_confirmation.html:21
+#: templates/web/pages/approve-confirm.business-process.html:119
+#: templates/web/pages/assign-confirm.business-process.html:119
+#: templates/web/pages/reject-confirm.business-process.html:119
+#: templates/web/pages/send-to-approve-confirm.business-process.html:119
+msgid "Confirm"
+msgstr "Подтвердить"
+
+#: templates/admin/action_confirmation.html:23
+msgid "No, take me back"
+msgstr "Нет, верните меня обратно"
+
+#: templates/hijack/contrib/admin/button.html:4
+msgid "Hijack"
+msgstr "Hijack"
+
+#: templates/web/base.html:7
+msgid "NZCS tasks"
+msgstr "NZCS задачи"
+
+#: templates/web/base.html:15
+#: templates/web/pages/detail.business-process.html:76
+msgid "Tasks"
+msgstr "Задачи"
+
+#: templates/web/base.html:24
+msgid "Sign out"
+msgstr "Выход"
+
+#: templates/web/pages/add.business-process.html:6
+#: templates/web/pages/index.html:11
+msgid "Add business process"
+msgstr "Создать бизнес процесс"
+
+#: templates/web/pages/add.business-process.html:15
+msgid "Submit"
+msgstr "Отправить"
+
+#: templates/web/pages/approve-confirm.business-process.html:51
+msgid "Approve confirmation"
+msgstr "Подтверждение отправки на утверждение"
+
+#: templates/web/pages/approve-confirm.business-process.html:69
+#: templates/web/pages/approve-confirm.business-process.html:129
+#: templates/web/pages/approve-tasks.business-process.html:161
+#: templates/web/pages/approve-tasks.business-process.html:314
+#: templates/web/pages/assign-all.business-process.html:69
+#: templates/web/pages/assign-all.business-process.html:129
+#: templates/web/pages/assign-confirm.business-process.html:69
+#: templates/web/pages/assign-confirm.business-process.html:129
+#: templates/web/pages/delegated-tasks.business-process.html:155
+#: templates/web/pages/delegated-tasks.business-process.html:296
+#: templates/web/pages/delegating.business-process.html:69
+#: templates/web/pages/delegating.business-process.html:155
+#: templates/web/pages/group-tasks.business-process.html:160
+#: templates/web/pages/group-tasks.business-process.html:303
+#: templates/web/pages/reject-confirm.business-process.html:69
+#: templates/web/pages/reject-confirm.business-process.html:129
+#: templates/web/pages/send-to-approve-confirm.business-process.html:69
+#: templates/web/pages/send-to-approve-confirm.business-process.html:129
+#: templates/web/pages/tasks.business-process.html:157
+#: templates/web/pages/tasks.business-process.html:355
+msgid "Comments"
+msgstr "Комментарии"
+
+#: templates/web/pages/approve-confirm.business-process.html:70
+#: templates/web/pages/assign-all.business-process.html:70
+#: templates/web/pages/assign-confirm.business-process.html:70
+#: templates/web/pages/delegating.business-process.html:70
+#: templates/web/pages/reject-confirm.business-process.html:70
+#: templates/web/pages/send-to-approve-confirm.business-process.html:70
+msgid "Date and time of approve"
+msgstr "Дата и время утверждения"
+
+#: templates/web/pages/approve-confirm.business-process.html:115
+#: templates/web/pages/assign-all.business-process.html:115
+#: templates/web/pages/assign-confirm.business-process.html:115
+#: templates/web/pages/delegating.business-process.html:144
+#: templates/web/pages/publish.business-process.html:14
+#: templates/web/pages/reject-confirm.business-process.html:115
+#: templates/web/pages/send-to-approve-confirm.business-process.html:115
+msgid "Cancel"
+msgstr "Отмена"
+
+#: templates/web/pages/approve-confirm.business-process.html:143
+#: templates/web/pages/approve-tasks.business-process.html:328
+#: templates/web/pages/assign-all.business-process.html:143
+#: templates/web/pages/assign-confirm.business-process.html:143
+#: templates/web/pages/delegated-tasks.business-process.html:310
+#: templates/web/pages/delegating.business-process.html:169
+#: templates/web/pages/group-tasks.business-process.html:317
+#: templates/web/pages/reject-confirm.business-process.html:143
+#: templates/web/pages/send-to-approve-confirm.business-process.html:143
+#: templates/web/pages/tasks.business-process.html:369
+msgid "Enter your comment..."
+msgstr "Введите ваш комментарий..."
+
+#: templates/web/pages/approve-confirm.business-process.html:144
+#: templates/web/pages/approve-tasks.business-process.html:329
+#: templates/web/pages/assign-all.business-process.html:144
+#: templates/web/pages/assign-confirm.business-process.html:144
+#: templates/web/pages/delegated-tasks.business-process.html:311
+#: templates/web/pages/delegating.business-process.html:170
+#: templates/web/pages/group-tasks.business-process.html:318
+#: templates/web/pages/reject-confirm.business-process.html:144
+#: templates/web/pages/send-to-approve-confirm.business-process.html:144
+#: templates/web/pages/tasks.business-process.html:370
+msgid "Send"
+msgstr "Отправить"
+
+#: templates/web/pages/approve-confirm.business-process.html:203
+#: templates/web/pages/approve-tasks.business-process.html:453
+#: templates/web/pages/assign-all.business-process.html:203
+#: templates/web/pages/assign-confirm.business-process.html:203
+#: templates/web/pages/delegated-tasks.business-process.html:435
+#: templates/web/pages/delegating.business-process.html:229
+#: templates/web/pages/group-tasks.business-process.html:442
+#: templates/web/pages/reject-confirm.business-process.html:203
+#: templates/web/pages/send-to-approve-confirm.business-process.html:203
+#: templates/web/pages/tasks.business-process.html:494
+msgid "No comments"
+msgstr "Комментариев нет"
+
+#: templates/web/pages/approve-tasks.business-process.html:62
+#: templates/web/pages/delegated-tasks.business-process.html:56
+#: templates/web/pages/group-tasks.business-process.html:62
+#: templates/web/pages/tasks.business-process.html:58
+msgid "My tasks"
+msgstr "Мои задачи"
+
+#: templates/web/pages/approve-tasks.business-process.html:72
+#: templates/web/pages/delegated-tasks.business-process.html:66
+#: templates/web/pages/group-tasks.business-process.html:72
+#: templates/web/pages/tasks.business-process.html:68
+msgid "Group tasks"
+msgstr "Групповые задачи"
+
+#: templates/web/pages/approve-tasks.business-process.html:82
+#: templates/web/pages/delegated-tasks.business-process.html:77
+#: templates/web/pages/group-tasks.business-process.html:82
+#: templates/web/pages/tasks.business-process.html:78
+msgid "Delegated tasks"
+msgstr "Делегированные задачи"
+
+#: templates/web/pages/approve-tasks.business-process.html:93
+#: templates/web/pages/delegated-tasks.business-process.html:87
+#: templates/web/pages/group-tasks.business-process.html:92
+#: templates/web/pages/tasks.business-process.html:88
+msgid "Approve tasks"
+msgstr "Задачи на утверждение"
+
+#: templates/web/pages/approve-tasks.business-process.html:104
+#: templates/web/pages/approve-tasks.business-process.html:125
+#: templates/web/pages/delegated-tasks.business-process.html:98
+#: templates/web/pages/delegated-tasks.business-process.html:119
+#: templates/web/pages/group-tasks.business-process.html:103
+#: templates/web/pages/group-tasks.business-process.html:124
+#: templates/web/pages/tasks.business-process.html:100
+#: templates/web/pages/tasks.business-process.html:121
+msgid "Search"
+msgstr "Поиск"
+
+#: templates/web/pages/approve-tasks.business-process.html:111
+#: templates/web/pages/delegated-tasks.business-process.html:105
+#: templates/web/pages/group-tasks.business-process.html:110
+#: templates/web/pages/tasks.business-process.html:107
+msgid "Status filter"
+msgstr "Фильтр по статусу"
+
+#: templates/web/pages/approve-tasks.business-process.html:129
+#: templates/web/pages/delegated-tasks.business-process.html:123
+#: templates/web/pages/detail.business-process.html:30
+#: templates/web/pages/group-tasks.business-process.html:128
+#: templates/web/pages/task_detail.html:13
+#: templates/web/pages/tasks.business-process.html:125
+msgid "Download"
+msgstr "Скачать"
+
+#: templates/web/pages/approve-tasks.business-process.html:145
+#: templates/web/pages/delegated-tasks.business-process.html:139
+#: templates/web/pages/group-tasks.business-process.html:144
+#: templates/web/pages/tasks.business-process.html:141
+msgid "#"
+msgstr "№"
+
+#: templates/web/pages/approve-tasks.business-process.html:162
+msgid "Sent to approve from"
+msgstr "Автор отправки на утверждение"
+
+#: templates/web/pages/approve-tasks.business-process.html:163
+msgid "Sent to approve date and time"
+msgstr "Когда отправлено на утверждение"
+
+#: templates/web/pages/approve-tasks.business-process.html:223
+#: templates/web/pages/delegated-tasks.business-process.html:217
+#: templates/web/pages/group-tasks.business-process.html:210
+#: templates/web/pages/tasks.business-process.html:260
+msgid "No tasks"
+msgstr "Не найдено задач"
+
+#: templates/web/pages/approve-tasks.business-process.html:293
+msgid "Approve"
+msgstr "Утвердить"
+
+#: templates/web/pages/approve-tasks.business-process.html:299
+msgid "Rework"
+msgstr "Отправить на доработку"
+
+#: templates/web/pages/assign-all.business-process.html:51
+msgid "Assigning all tasks"
+msgstr "Назначение всех задач"
+
+#: templates/web/pages/assign-all.business-process.html:119
+msgid "Assign"
+msgstr "Назначить"
+
+#: templates/web/pages/assign-confirm.business-process.html:51
+msgid "Assign confirmation"
+msgstr "Подтверждение назначения"
+
+#: templates/web/pages/delegated-tasks.business-process.html:156
+msgid "Assigned to"
+msgstr "На кого назначено"
+
+#: templates/web/pages/delegating.business-process.html:51
+msgid "Delegating tasks"
+msgstr "Делегированные задач"
+
+#: templates/web/pages/delegating.business-process.html:146
+msgid "Delegate"
+msgstr "Назначить"
+
+#: templates/web/pages/delete.business-process.html:8
+msgid "Are you sure you want to delete this business process?"
+msgstr "Вы уверены, что хотите удалить этот бизнес процесс?"
+
+#: templates/web/pages/delete.business-process.html:9
+#: templates/web/pages/detail.business-process.html:73
+#: templates/web/pages/status.delete.business-process.html:9
+msgid "Delete"
+msgstr "Удалить"
+
+#: templates/web/pages/detail.business-process.html:11
+#: templates/web/pages/index.html:15 templates/web/pages/task_detail.html:9
+msgid "ID"
+msgstr "Идентификатор"
+
+#: templates/web/pages/detail.business-process.html:15
+msgid "UUID"
+msgstr "UUID"
+
+#: templates/web/pages/detail.business-process.html:27
+#: templates/web/pages/task_detail.html:12
+msgid "Excel file"
+msgstr "Excel файл"
+
+#: templates/web/pages/detail.business-process.html:32
+msgid "No file"
+msgstr "Нет файла"
+
+#: templates/web/pages/detail.business-process.html:53
+#: templates/web/pages/index.html:18 templates/web/pages/task_detail.html:44
+msgid "Minimal BPM group"
+msgstr "Минимальная группа BPM"
+
+#: templates/web/pages/detail.business-process.html:61
+#: templates/web/pages/index.html:21
+msgid "Created at"
+msgstr "Время создания"
+
+#: templates/web/pages/detail.business-process.html:65
+#: templates/web/pages/index.html:20
+msgid "Updated at"
+msgstr "Время обновления"
+
+#: templates/web/pages/detail.business-process.html:71
+msgid "Edit"
+msgstr "Редактировать"
+
+#: templates/web/pages/detail.business-process.html:84
+#: templates/web/pages/publish.business-process.html:15
+msgid "Publish"
+msgstr "Опубликовать"
+
+#: templates/web/pages/detail.business-process.html:95
+#: templates/web/pages/edit-columns.business-process.html:12
+#: templates/web/pages/statuses.detail.business-process.html:7
+msgid "Columns"
+msgstr "Колонки"
+
+#: templates/web/pages/detail.business-process.html:103
+#: templates/web/pages/statuses.detail.business-process.html:10
+msgid "Defined task statuses"
+msgstr "Виды статусов задачи"
+
+#: templates/web/pages/detail.business-process.html:110
+#: templates/web/pages/edit-columns.business-process.html:17
+#: templates/web/pages/statuses.detail.business-process.html:24
+msgid "Name"
+msgstr "Наименование"
+
+#: templates/web/pages/detail.business-process.html:111
+#: templates/web/pages/edit-columns.business-process.html:18
+msgid "Type"
+msgstr "Тип"
+
+#: templates/web/pages/detail.business-process.html:135
+msgid "Edit columns"
+msgstr "Редактировать столбцы"
+
+#: templates/web/pages/detail.business-process.html:141
+msgid "No columns"
+msgstr "Нет столбцов"
+
+#: templates/web/pages/edit-columns.business-process.html:6
+msgid "Edit business process columns"
+msgstr "Редактировать столбцы бизнес процесса"
+
+#: templates/web/pages/edit-columns.business-process.html:47
+#: templates/web/pages/edit.business-process.html:15
+#: templates/web/pages/form.status.business-process.html:15
+#: templates/web/pages/tasks.business-process.html:330
+msgid "Save"
+msgstr "Сохранить"
+
+#: templates/web/pages/edit.business-process.html:6
+msgid "Edit business process"
+msgstr "Редактировать бизнес процесс"
+
+#: templates/web/pages/group-tasks.business-process.html:279
+msgid "Assign to me"
+msgstr "Назначить на меня"
+
+#: templates/web/pages/group-tasks.business-process.html:285
+msgid "Assign all found tasks to me"
+msgstr "Назначить все найденные задачи на меня"
+
+#: templates/web/pages/group-tasks.business-process.html:287
+msgid "Assign all tasks to me"
+msgstr "Назначить все задачи на меня"
+
+#: templates/web/pages/index.html:22
+#: templates/web/pages/statuses.detail.business-process.html:26
+msgid "Action"
+msgstr "Действие"
+
+#: templates/web/pages/publish.business-process.html:6
+msgid "Publish business process"
+msgstr "Публикация бизнес процесса"
+
+#: templates/web/pages/publish.business-process.html:9
+msgid "Do you want to publish tasks?"
+msgstr "Вы хотите опубликовать задачи?"
+
+#: templates/web/pages/reject-confirm.business-process.html:51
+msgid "Reject confirmation"
+msgstr "Подтверждение отправки на доработку"
+
+#: templates/web/pages/send-to-approve-confirm.business-process.html:51
+msgid "Send to approve confirmation"
+msgstr "Подтверждение отправки на утверждение"
+
+#: templates/web/pages/status.delete.business-process.html:8
+msgid "Are you sure you want to delete this status?"
+msgstr "Вы уверены, что хотите удалить этот статус?"
+
+#: templates/web/pages/statuses.detail.business-process.html:18
+msgid "Add status"
+msgstr "Создать статус"
+
+#: templates/web/pages/statuses.detail.business-process.html:25
+msgid "Required fields"
+msgstr "Обязательные поля"
+
+#: templates/web/pages/task_detail.html:20
+msgid "Parser type"
+msgstr "Тип парсера"
+
+#: templates/web/pages/task_detail.html:28
+msgid "Has row numbers"
+msgstr "Имеет номера строк"
+
+#: templates/web/pages/task_detail.html:33
+msgid "Deadline"
+msgstr "Срок выполнения"
+
+#: templates/web/pages/tasks.business-process.html:158
+msgid "Assigned by"
+msgstr "Кем назначено"
+
+#: templates/web/pages/tasks.business-process.html:228
+msgid "Not set"
+msgstr "Не установлено"
+
+#: templates/web/pages/tasks.business-process.html:335
+msgid "Assign to ..."
+msgstr "Назначить на ..."
+
+#: templates/web/pages/tasks.business-process.html:340
+msgid "Send to approve"
+msgstr "Отправить на утверждение"

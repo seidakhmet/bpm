@@ -94,12 +94,35 @@
     </ul>
 
     <form method="get" action="{% url 'delegated-tasks-business-process' pk=object.pk %}">
-        <div class="input-group mb-3 mt-3">
+        <div class="input-group input-group-sm mb-3 mt-3">
             <input type="text" class="form-control" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}"
                    aria-describedby="search-button" name="query" value="{{ query }}">
-            <button class="btn btn-outline-secondary" type="submit" id="search-button">
-                <i class="fa-solid fa-search"></i>
-            </button>
+        </div>
+        <div class="row mb-3">
+            <div class="col-4">
+                {% if statuses %}
+                    <select class="form-select form-select-sm" name="filter_status">
+                        <option value="0">{% trans 'Status filter' %}</option>
+                        {% for status in statuses %}
+                            <option value="{{ status.id }}"
+                                    {% if status.id in filter_status %}selected{% endif %}
+                            >
+                                {{ status.status_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+            </div>
+            <div class="col-8">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-search"></i>
+                    {% trans 'Search' %}
+                </button>
+                <button type="submit" class="btn btn-danger btn-sm" name="download_excel" value="true">
+                    <i class="fa-solid fa-file-excel"></i>
+                    {% trans 'Download' %}
+                </button>
+            </div>
         </div>
     </form>
 
@@ -126,9 +149,11 @@
                             </div>
                         </th>
                     {% endfor %}
-                    <th style="text-align: center; vertical-align: middle;">{% trans "Status" %}</th>
+                    {% if statuses %}
+                        <th style="text-align: center; vertical-align: middle;">{% trans "Status" %}</th>
+                    {% endif %}
                     <th style="text-align: center; vertical-align: middle;">{% trans "Comments" %}</th>
-                    <th style="text-align: left; vertical-align: middle;">{% trans "Executor" %}</th>
+                    <th style="text-align: left; vertical-align: middle;">{% trans "Assigned to" %}</th>
                 </tr>
                 </thead>
 
@@ -144,9 +169,9 @@
                                            data-task-id="{{ row.id }}">
                                 </div>
                             </td>
-                            {% for cell in row.get_cells %}
-                                <td style="width: max-content;padding: 0;{% if cell.column.is_boolean %}text-align: center;{% endif %}">
-                                    {% if cell.column.is_boolean %}
+                            {% for cell in row.cells.all %}
+                                <td style="width: max-content;padding: 0;{% if cell.is_boolean %}text-align: center;{% endif %}">
+                                    {% if cell.is_boolean %}
                                         {% if cell.value == '1' %}
                                             <i class="fa-solid fa-circle-check" style="color: green;"></i>
                                         {% elif cell.value == '0' %}
@@ -157,21 +182,32 @@
                                     {% endif %}
                                 </td>
                             {% endfor %}
-                            <td>
-                                {{ row.get_status }}
-                            </td>
+                            {% if statuses %}
+                                <td>
+                                    {{ row.get_status }}
+                                </td>
+                            {% endif %}
                             <td style="text-align: center;" data-task-id="{{ row.id }}">
                                 <a href="#" class="icon-link icon-link-hover comments position-relative"
                                    style="text-decoration:none;">
                                     <i class="fa-solid fa-comment-dots"></i>
                                     {% if row.comments_count %}
                                         <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
-                                    <span class="visually-hidden">New alerts</span></span>
+                                            <span class="visually-hidden">New alerts</span>
+                                        </span>
                                     {% endif %}
                                 </a>
                             </td>
                             <td>
-                                <div style="width: max-content;">{{ row.get_last_delegation }}</div>
+                                <div style="width: max-content;">
+                                    {% if row.last_delegation_delegated_to_bpm_group_name %}
+                                        {{ row.last_delegation_delegated_to_bpm_group_name }}
+                                    {% elif row.last_delegation_delegated_to_username %}
+                                        {{ row.last_delegation_delegated_to_username }}
+                                    {% else %}
+                                        {% trans 'No delegation' %}
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}

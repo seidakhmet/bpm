@@ -96,12 +96,35 @@
 
 
     <form method="get" action="{% url 'tasks-business-process' pk=object.pk %}">
-        <div class="input-group mb-3 mt-3">
+        <div class="input-group input-group-sm mb-3 mt-3">
             <input type="text" class="form-control" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}"
                    aria-describedby="search-button" name="query" value="{{ query }}">
-            <button class="btn btn-outline-secondary" type="submit" id="search-button">
-                <i class="fa-solid fa-search"></i>
-            </button>
+        </div>
+        <div class="row mb-3">
+            <div class="col-4">
+                {% if statuses %}
+                    <select class="form-select form-select-sm" name="filter_status">
+                        <option value="0">{% trans 'Status filter' %}</option>
+                        {% for status in statuses %}
+                            <option value="{{ status.id }}"
+                                    {% if status.id in filter_status %}selected{% endif %}
+                            >
+                                {{ status.status_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+            </div>
+            <div class="col-8">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-search"></i>
+                    {% trans 'Search' %}
+                </button>
+                <button type="submit" class="btn btn-danger btn-sm" name="download_excel" value="true">
+                    <i class="fa-solid fa-file-excel"></i>
+                    {% trans 'Download' %}
+                </button>
+            </div>
         </div>
     </form>
 
@@ -128,9 +151,11 @@
                             </div>
                         </th>
                     {% endfor %}
-                    <th style="text-align: center; vertical-align: middle;">{% trans "Status" %}</th>
+                    {% if statuses %}
+                        <th style="text-align: center; vertical-align: middle;">{% trans "Status" %}</th>
+                    {% endif %}
                     <th style="text-align: center; vertical-align: middle;">{% trans "Comments" %}</th>
-                    <th style="text-align: left; vertical-align: middle;">{% trans "Executor" %}</th>
+                    <th style="text-align: left; vertical-align: middle;">{% trans "Assigned by" %}</th>
                 </tr>
                 </thead>
 
@@ -146,45 +171,45 @@
                                            data-task-id="{{ row.id }}" class="rowCheckboxes">
                                 </div>
                             </td>
-                            {% for cell in row.get_cells %}
+                            {% for cell in row.cells.all %}
                                 <td style="width: max-content;padding: 0;text-align: center;">
-                                    {% if cell.column.is_editable %}
-                                        {% if cell.column.is_text %}
+                                    {% if cell.is_editable %}
+                                        {% if cell.is_text %}
                                             <textarea
-                                                    style="width: {% if cell.column.is_boolean %}fit-content{% else %}100%{% endif %}; box-sizing: border-box; border: none; outline: none;"
+                                                    style="width: {% if cell.is_boolean %}fit-content{% else %}100%{% endif %}; box-sizing: border-box; border: none; outline: none;"
                                                     name="cell_{{ cell.id }}"
-                                                    type="{{ cell.column.input_type }}"
-                                                    class="cellInput cell_{{ cell.id }} cell_column_{{ cell.column.id }} cell_task_{{ row.id }}"
+                                                    type="{{ cell.input_type }}"
+                                                    class="cellInput cell_{{ cell.id }} cell_column_{{ cell.column_id }} cell_task_{{ row.id }}"
                                                     data-cell-id="{{ cell.id }}"
-                                                    data-column-id="{{ cell.column.id }}"
+                                                    data-column-id="{{ cell.column_id }}"
                                                     data-task-id="{{ row.id }}"
                                                     data-initial-value="{{ cell.value }}"
                                                     rows="1"
                                             >{{ cell.get_template_value|default:"" }}</textarea>
                                         {% else %}
                                             <input
-                                                    style="width: {% if cell.column.is_boolean %}fit-content{% else %}100%{% endif %}; box-sizing: border-box; border: none; outline: none;"
-                                                    {% if not cell.column.is_boolean %}name="cell_{{ cell.id }}"{% endif %}
-                                                    type="{{ cell.column.input_type }}"
-                                                    class="cellInput cell_{{ cell.id }} cell_column_{{ cell.column_id }} cell_task_{{ row.id }} {% if cell.column.is_boolean %}booleanCell{% endif %}"
+                                                    style="width: {% if cell.is_boolean %}fit-content{% else %}100%{% endif %}; box-sizing: border-box; border: none; outline: none;"
+                                                    {% if not cell.is_boolean %}name="cell_{{ cell.id }}"{% endif %}
+                                                    type="{{ cell.input_type }}"
+                                                    class="cellInput cell_{{ cell.id }} cell_column_{{ cell.column_id }} cell_task_{{ row.id }} {% if cell.is_boolean %}booleanCell{% endif %}"
                                                     data-cell-id="{{ cell.id }}"
-                                                    data-column-id="{{ cell.column.id }}"
+                                                    data-column-id="{{ cell.column_id }}"
                                                     data-task-id="{{ row.id }}"
                                                     data-initial-value="{{ cell.value }}"
                                                     {% if cell.value %}
                                                     value="{{ cell.get_template_value }}"
-                                                        {% if cell.column.is_boolean and cell.value == '1' %}
+                                                        {% if cell.is_boolean and cell.value == '1' %}
                                                     checked
                                                         {% endif %}
                                                     {% endif %}
                                             >
-                                            {% if cell.column.is_boolean %}
+                                            {% if cell.is_boolean %}
                                                 <input type="hidden" id="cell_{{ cell.id }}" name="cell_{{ cell.id }}"
                                                        value="{{ cell.get_template_value }}">
                                             {% endif %}
                                         {% endif %}
                                     {% else %}
-                                        {% if cell.column.is_boolean %}
+                                        {% if cell.is_boolean %}
                                             {% if cell.value == '1' %}
                                                 <i class="fa-solid fa-circle-check" style="color: green;"></i>
                                             {% elif cell.value == '0' %}
@@ -196,19 +221,21 @@
                                     {% endif %}
                                 </td>
                             {% endfor %}
-                            <td>
-                                <select name="row_status_{{ row.id }}" class="taskStatuses"
-                                        data-task-id="{{ row.id }}">
-                                    <option value="0">{% trans 'Not set' %}</option>
-                                    {% for status in statuses %}
-                                        <option value="{{ status.id }}"
-                                                {% if status.id == row.status_id %}selected{% endif %}
-                                        >
-                                            {{ status.status_name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </td>
+                            {% if statuses %}
+                                <td>
+                                    <select name="row_status_{{ row.id }}" class="taskStatuses"
+                                            data-task-id="{{ row.id }}">
+                                        <option value="0">{% trans 'Not set' %}</option>
+                                        {% for status in statuses %}
+                                            <option value="{{ status.id }}"
+                                                    {% if status.id == row.status_id %}selected{% endif %}
+                                            >
+                                                {{ status.status_name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            {% endif %}
                             <td style="text-align: center;" data-task-id="{{ row.id }}">
                                 <a href="#" class="icon-link icon-link-hover comments position-relative"
                                    style="text-decoration:none;">
@@ -219,8 +246,10 @@
                                     {% endif %}
                                 </a>
                             </td>
-                            <td>
-                                <div style="width: max-content;">{{ row.get_last_delegation }}</div>
+                            <td style="width: max-content;">
+                                <div style="width: max-content;">
+                                    {{ row.last_delegation_created_by_delegated }}
+                                </div>
                             </td>
                         </tr>
 
